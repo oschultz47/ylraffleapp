@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "paths": {
+    "/raffle": {
+      "name": "/raffle",
+      "lambdaFunction": "ylraffleapp55c1f14c",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
+    }
+  }
+}
