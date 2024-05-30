@@ -9,11 +9,26 @@
       "UnauthRoleName": "amplify-ylraffleapp-dev-162740-unauthRole",
       "StackName": "amplify-ylraffleapp-dev-162740",
       "StackId": "arn:aws:cloudformation:us-east-1:490988341276:stack/amplify-ylraffleapp-dev-162740/1dafda20-1d39-11ef-914e-0ea73d118adf",
-      "AmplifyAppId": "d39p5jt5ly4o3p"
+      "AmplifyAppId": "d39p5jt5ly4o3p",
+      "APIGatewayAuthURL": "https://s3.amazonaws.com/amplify-ylraffleapp-dev-162740-deployment/amplify-cfn-templates/api/APIGatewayAuthStack.json"
     },
     "categories": {
       "auth": {
         "ylraffleappfdc5f488": {}
+      },
+      "function": {
+        "ylraffleapp55c1f14c": {
+          "deploymentBucketName": "amplify-ylraffleapp-dev-162740-deployment",
+          "s3Key": "amplify-builds/ylraffleapp55c1f14c-6c317568706866393852-build.zip"
+        },
+        "ylraffleapp88b5f6df": {
+          "deploymentBucketName": "amplify-ylraffleapp-dev-162740-deployment",
+          "s3Key": "amplify-builds/ylraffleapp88b5f6df-54676c3551476b495a50-build.zip"
+        }
+      },
+      "api": {
+        "apiae2c3e0f": {},
+        "ylraffleapi": {}
       }
     }
   }

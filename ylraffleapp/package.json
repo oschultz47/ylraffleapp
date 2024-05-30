@@ -15,6 +15,7 @@
     "@mui/icons-material": "^5.15.19",
     "@mui/material": "^5.15.19",
     "aws-amplify": "^6.3.4",
+    "aws-sdk": "^2.1631.0",
     "mui": "^0.0.1",
     "next": "^14.2.3",
     "react": "^18",

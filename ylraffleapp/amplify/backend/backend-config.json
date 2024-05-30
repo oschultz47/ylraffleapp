@@ -1,4 +1,34 @@
 {
+  "api": {
+    "apiae2c3e0f": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "ylraffleapp88b5f6df"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "ylraffleapi": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "ylraffleapp55c1f14c"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    }
+  },
   "auth": {
     "ylraffleappfdc5f488": {
       "customAuth": false,
@@ -25,6 +55,52 @@
       },
       "providerPlugin": "awscloudformation",
       "service": "Cognito"
+    }
+  },
+  "function": {
+    "ylraffleapp55c1f14c": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "ylraffleapp88b5f6df": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_ylraffleapp55c1f14c_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "ylraffleapp55c1f14c"
+        }
+      ]
+    },
+    "AMPLIFY_function_ylraffleapp55c1f14c_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "ylraffleapp55c1f14c"
+        }
+      ]
+    },
+    "AMPLIFY_function_ylraffleapp88b5f6df_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "ylraffleapp88b5f6df"
+        }
+      ]
+    },
+    "AMPLIFY_function_ylraffleapp88b5f6df_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "ylraffleapp88b5f6df"
+        }
+      ]
     }
   }
 }
