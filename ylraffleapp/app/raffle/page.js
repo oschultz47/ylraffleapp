@@ -1,6 +1,6 @@
 "use client"
 
-import Raffle from '../Raffle';
+import Raffle from '../raffle';
 import { Amplify } from 'aws-amplify';
 import awsconfig from '../../src/aws-exports';
 
