@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { get } from 'aws-amplify/api';
-import './directory.css';
+import './leaders.css';
 import { useRouter } from 'next/navigation';
 
 
-const Directory = () => {
+const Leaders = () => {
   const [tableData, setTableData] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     
@@ -18,8 +18,8 @@ const Directory = () => {
       try {
         const restOperation = get({
           apiName: 'ylraffleapi',
-            path: '/kids',
-            httpMethod: 'GET'
+            path: '/leaders',
+          httpMethod: 'GET'
         });
         const response = await restOperation.response;
         const reader = response.body.getReader();
@@ -36,7 +36,6 @@ const Directory = () => {
           console.log(result);
         
         result.forEach((item) => {
-          item.Timestamp = new Date(item.Timestamp).toLocaleString();
           item.Leader = item.Leader.toLocaleString();
         });
         setTableData(result);
@@ -60,43 +59,43 @@ const Directory = () => {
     (item) =>
       item.Name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.PhoneNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.Timestamp.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.School.toLowerCase().includes(searchQuery.toLowerCase())
+      item.School.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.Email.toLowerCase().includes(searchQuery.toLowerCase())
     );
     
 
 
   return (
-    <div className="directory-container">
+    <div className="leaders-container">
       <div className="top-bar">
         <button className="home-button" onClick={() => handleNavigate('/')}>
         Home
         </button>
         <input
           type="text"
-          placeholder="Search by name, phone number, school or timestamp"
+          placeholder="Search by name, phone number, school, timestamp, or email"
           value={searchQuery}
           onChange={handleSearchChange}
           className="search-input"
         />
       </div>
-      <table className="directory-table">
+      <table className="leaders-table">
         <thead>
           <tr>
             <th>Name</th>
-            <th>School</th>
-            <th>Phone Number</th>         
-            <th>Timestamp</th>
+            <th>School</th>          
+            <th>Phone Number</th>
+            <th>Email</th>  
           </tr>
         </thead>
         <tbody>
           {filteredData.map((item, index) => (
             <tr key={index}>
-              <td>{item.Name}</td>
-              <td>{item.School}</td>
-              <td>{item.PhoneNumber}</td>
-              <td>{item.Timestamp}</td>
-              </tr>
+            <td>{item.Name}</td>
+            <td>{item.School}</td>
+            <td>{item.PhoneNumber}</td>
+            <td>{item.Email}</td>
+            </tr>
           ))}
         </tbody>
       </table>
@@ -104,4 +103,4 @@ const Directory = () => {
   );
 };
 
-export default Directory;
+export default Leaders;

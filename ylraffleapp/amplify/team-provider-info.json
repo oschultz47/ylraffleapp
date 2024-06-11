@@ -19,11 +19,11 @@
       "function": {
         "ylraffleapp55c1f14c": {
           "deploymentBucketName": "amplify-ylraffleapp-dev-162740-deployment",
-          "s3Key": "amplify-builds/ylraffleapp55c1f14c-6c317568706866393852-build.zip"
+          "s3Key": "amplify-builds/ylraffleapp55c1f14c-4c6372317658636d4f44-build.zip"
         },
         "ylraffleapp88b5f6df": {
           "deploymentBucketName": "amplify-ylraffleapp-dev-162740-deployment",
-          "s3Key": "amplify-builds/ylraffleapp88b5f6df-54676c3551476b495a50-build.zip"
+          "s3Key": "amplify-builds/ylraffleapp88b5f6df-62686e3552565843785a-build.zip"
         }
       },
       "api": {
