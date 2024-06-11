@@ -1,0 +1,49 @@
+/* directory.css */
+
+.directory-container {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .home-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .search-input {
+    flex: 1;
+    margin-left: 20px;
+    padding: 10px;
+    font-size: 16px;
+  }
+  
+  .directory-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+  }
+  
+  .directory-table th,
+  .directory-table td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: left;
+  }
+  
+  .directory-table th {
+    background-color: #f4f4f4;
+  }
+  
+  .directory-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  

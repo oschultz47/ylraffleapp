@@ -72,20 +72,7 @@ function Home() {
   }
 
   return (
-    <div>
       <ButtonAppBar />
-      {console.log("User: ", user)}
-      <p>Email: {user.signInDetails.loginId} </p>
-      {tableData.map((item) => (
-        <div key={item.PhoneNumber}>
-          <p>Name: {item.Name}</p>
-          <p>Phone Number: {item.PhoneNumber}</p>
-          <p>School: {item.School}</p>
-          <p>Leader: {item.Leader.toString()}</p>
-          <p>Timestamp: {item.Timestamp}</p>
-        </div>
-      ))}
-    </div>
   );
 }
 

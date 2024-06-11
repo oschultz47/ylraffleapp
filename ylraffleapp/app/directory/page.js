@@ -1,17 +1,17 @@
 "use client"
 
-import Raffle from '../raffle';
+import Directory from '../directory';
 import { Amplify } from 'aws-amplify';
 import awsconfig from '../../src/aws-exports';
 
 Amplify.configure(awsconfig);
 
-const RafflePage = () => {
+const DirectoryPage = () => {
   return (
     <div style={{ fontFamily: 'Arial, sans-serif' }}>
-      <Raffle />
+      <Directory />
     </div>
   );
 };
 
-export default RafflePage;
+export default DirectoryPage;
