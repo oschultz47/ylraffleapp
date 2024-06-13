@@ -1,52 +1,95 @@
-/* leaders.css */
-
 .leaders-container {
-    padding: 20px;
-    text-align: center;
-  }
-  
-  .top-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    margin-bottom: 20px;
-  }
-  
-  .home-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-  }
-  
-  .search-input {
-    flex: 1;
-    margin-left: 20px;
-    padding: 10px;
-    font-size: 16px;
-  }
-  
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.home-button {
+  background-color: gray;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.search-input {
+  padding: 10px;
+  width: 100%;
+  margin-left: 20px;
+}
+
+.leaders-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.leaders-table th, .leaders-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.leaders-table th {
+  background-color: #f2f2f2;
+}
+
+.access-denied {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.access-denied p {
+  font-size: 18px;
+  color: red;
+}
+
+@media (max-width: 768px) {
   .leaders-table {
     width: 100%;
-    border-collapse: collapse;
-    margin: 0 auto;
+    border: 0;
   }
-  
-  .leaders-table th,
+
+  .leaders-table thead {
+    display: none;
+  }
+
+  .leaders-table tr {
+    display: block;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
   .leaders-table td {
-    padding: 10px;
-    border: 1px solid #ccc;
+    display: block;
+    text-align: right;
+    font-size: 14px;
+    border-bottom: 1px solid #ddd;
+    position: relative;
+    padding-left: 50%;
+    white-space: nowrap;
+  }
+
+  .leaders-table td:last-child {
+    border-bottom: 0;
+  }
+
+  .leaders-table td:before {
+    content: attr(data-label);
+    position: absolute;
+    left: 10px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
     text-align: left;
+    font-weight: bold;
   }
-  
-  .leaders-table th {
-    background-color: #f4f4f4;
-  }
-  
-  .leaders-table tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-  
-  .access-denied{
-    text-align: center;
-  }
+}

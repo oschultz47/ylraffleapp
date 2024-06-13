@@ -7,23 +7,20 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '../context/AuthContext';
 import LoadingScreen from '../LoadingScreen';
 
-
 const Leaders = () => {
   const [tableData, setTableData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [leader, setLeader] = useState(false);
   const [found, setFound] = useState(false);
   const { auth } = useAuth();
-    
-    const router = useRouter();
-
+  const router = useRouter();
 
   useEffect(() => {
     const fetchItems = async () => {
       try {
         const restOperation = get({
           apiName: 'ylraffleapi',
-            path: '/leaders',
+          path: '/leaders',
           httpMethod: 'GET'
         });
         const response = await restOperation.response;
@@ -36,8 +33,9 @@ const Leaders = () => {
           const { value, done: streamDone } = await reader.read();
           done = streamDone;
           result += decoder.decode(value, { stream: !done });
-          }
-          result = JSON.parse(result);        
+        }
+        result = JSON.parse(result);
+        
         result.forEach((item) => {
           item.Leader = item.Leader.toLocaleString();
           const match = item.PhoneNumber.match(/^\+1(\d{3})(\d{3})(\d{4})$/);
@@ -77,11 +75,11 @@ const Leaders = () => {
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
-    };
-    
-    const handleNavigate = (path) => {
-        router.push(path);
-      };
+  };
+
+  const handleNavigate = (path) => {
+    router.push(path);
+  };
 
   const filteredData = tableData.filter(
     (item) =>
@@ -90,7 +88,7 @@ const Leaders = () => {
       item.School.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.Email.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  
+
   if (!found) {
     return <LoadingScreen />;
   }
@@ -107,7 +105,7 @@ const Leaders = () => {
     <div className="leaders-container">
       <div className="top-bar">
         <button className="home-button" onClick={() => handleNavigate('/')}>
-        Home
+          Home
         </button>
         <input
           type="text"
@@ -121,18 +119,18 @@ const Leaders = () => {
         <thead>
           <tr>
             <th>Name</th>
-            <th>Team</th>          
+            <th>Team</th>
             <th>Phone Number</th>
-            <th>Email</th>  
+            <th>Email</th>
           </tr>
         </thead>
         <tbody>
           {filteredData.map((item, index) => (
             <tr key={index}>
-            <td>{item.Name}</td>
-            <td>{item.School}</td>
-            <td>{item.PhoneNumber}</td>
-            <td>{item.Email}</td>
+              <td data-label="Name">{item.Name}</td>
+              <td data-label="Team">{item.School}</td>
+              <td data-label="Phone Number">{item.PhoneNumber}</td>
+              <td data-label="Email">{item.Email}</td>
             </tr>
           ))}
         </tbody>

@@ -12,7 +12,7 @@ const Directory = () => {
   const [leaderData, setLeaderData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [leader, setLeader] = useState(false);
-  const [school, setSchool] = useState('ffffff')
+  const [school, setSchool] = useState('ffffff');
   const [found, setFound] = useState(false);
   const { auth } = useAuth();
   const router = useRouter();
@@ -37,7 +37,7 @@ const Directory = () => {
           result += decoder.decode(value, { stream: !done });
         }
         result = JSON.parse(result);
-        
+
         result.forEach((item) => {
           item.Timestamp = new Date(item.Timestamp).toLocaleString();
           item.Leader = item.Leader.toLocaleString();
@@ -74,7 +74,7 @@ const Directory = () => {
           result += decoder.decode(value, { stream: !done });
         }
         result = JSON.parse(result);
-        
+
         result.forEach((item) => {
           item.Leader = item.Leader.toLocaleString();
         });
@@ -108,7 +108,6 @@ const Directory = () => {
     const executeSearch = async () => {
       await searchLeader();
       foundLeader();
-      
     };
 
     executeSearch();
@@ -172,10 +171,10 @@ const Directory = () => {
         <tbody>
           {filteredData.map((item, index) => (
             <tr key={index}>
-              <td>{item.Name}</td>
-              <td>{item.School}</td>
-              <td>{item.PhoneNumber}</td>
-              <td>{item.Timestamp}</td>
+              <td data-label="Name">{item.Name}</td>
+              <td data-label="School">{item.School}</td>
+              <td data-label="Phone Number">{item.PhoneNumber}</td>
+              <td data-label="Last at Club">{item.Timestamp}</td>
             </tr>
           ))}
         </tbody>
