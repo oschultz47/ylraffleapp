@@ -1,6 +1,6 @@
 "use client"
 
-import Directory from '../directory';
+import Directory from './directory';
 import { Amplify } from 'aws-amplify';
 import awsconfig from '../../src/aws-exports';
 

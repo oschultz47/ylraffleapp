@@ -32,7 +32,6 @@ const Raffle = () => {
           item.Timestamp = new Date(item.Timestamp).toLocaleString();
         });
         setTableData(result);
-        console.log('Items:', result);
       } catch (error) {
         console.error('Error fetching items:', error);
       }
@@ -72,8 +71,6 @@ const Raffle = () => {
     const buttonRect = button.getBoundingClientRect();
     const positions = [];
       const margin = calculateFontSize(names.length) * 2;
-      console.log(margin);
-
     const addPosition = (top, left, width, height) => {
       positions.push({ top, left, width, height });
     };

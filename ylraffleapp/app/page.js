@@ -28,7 +28,7 @@ function Home() {
       });
     }
     catch {
-      console.log('No user');
+      console.error('No user');
     }
   }, []);
 
@@ -61,10 +61,6 @@ function Home() {
     };
     fetchItems();
   }, []);
-
-  React.useEffect(() => {
-  }
-    , [tableData]);
   
   React.useEffect(() => {
     setLeader(false);
@@ -75,22 +71,12 @@ function Home() {
     });
   }, [tableData, auth])
   
-
-
   if (auth == null) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div>
     <ButtonAppBar />
-    <p>
-    {
-    leader === true
-      ? "here"
-      : "there"
-    }
-    </p></div>
   );
 }
 

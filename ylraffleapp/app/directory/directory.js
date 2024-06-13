@@ -4,8 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { get } from 'aws-amplify/api';
 import './directory.css';
 import { useRouter } from 'next/navigation';
-import { useAuth } from './context/AuthContext';
-import LoadingScreen from './LoadingScreen';
+import { useAuth } from '../context/AuthContext';
+import LoadingScreen from '../LoadingScreen';
 
 const Directory = () => {
   const [tableData, setTableData] = useState([]);
@@ -41,6 +41,10 @@ const Directory = () => {
         result.forEach((item) => {
           item.Timestamp = new Date(item.Timestamp).toLocaleString();
           item.Leader = item.Leader.toLocaleString();
+          const match = item.PhoneNumber.match(/^\+1(\d{3})(\d{3})(\d{4})$/);
+          if (match) {
+            item.PhoneNumber = `+1 (${match[1]}) ${match[2]}-${match[3]}`;
+          }
         });
         setTableData(result);
       } catch (error) {
@@ -150,7 +154,7 @@ const Directory = () => {
         </button>
         <input
           type="text"
-          placeholder="Search by name, phone number, school or timestamp"
+          placeholder="Search by name, school, phone number, or last time at club"
           value={searchQuery}
           onChange={handleSearchChange}
           className="search-input"
@@ -162,7 +166,7 @@ const Directory = () => {
             <th>Name</th>
             <th>School</th>
             <th>Phone Number</th>
-            <th>Timestamp</th>
+            <th>Last at Club</th>
           </tr>
         </thead>
         <tbody>

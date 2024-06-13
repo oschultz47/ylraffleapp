@@ -1,6 +1,6 @@
 "use client"
 
-import Leaders from '../leaders';
+import Leaders from './leaders';
 import { Amplify } from 'aws-amplify';
 import awsconfig from '../../src/aws-exports';
 

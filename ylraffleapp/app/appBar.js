@@ -33,7 +33,7 @@ export default function ButtonAppBar() {
             </Typography>
             <Box sx={{ flex: '1 1 90%', display: 'flex', justifyContent: 'space-evenly' }}>
               <Button color="inherit" onClick={() => handleNavigation('/raffle')}>Raffle</Button>
-              <Button color="inherit" onClick={() => handleNavigation('/directory')}>Directory</Button>
+              <Button color="inherit" onClick={() => handleNavigation('/directory')}>Kids</Button>
               <Button color="inherit" onClick={() => handleNavigation('/leaders')}>Leaders</Button>
               <Button color="inherit" onClick={() => signOut()}>Log Out</Button>
             </Box>

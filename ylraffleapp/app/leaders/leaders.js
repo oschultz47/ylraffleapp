@@ -4,8 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { get } from 'aws-amplify/api';
 import './leaders.css';
 import { useRouter } from 'next/navigation';
-import { useAuth } from './context/AuthContext';
-import LoadingScreen from './LoadingScreen';
+import { useAuth } from '../context/AuthContext';
+import LoadingScreen from '../LoadingScreen';
 
 
 const Leaders = () => {
@@ -37,14 +37,15 @@ const Leaders = () => {
           done = streamDone;
           result += decoder.decode(value, { stream: !done });
           }
-          result = JSON.parse(result);
-          console.log(result);
-        
+          result = JSON.parse(result);        
         result.forEach((item) => {
           item.Leader = item.Leader.toLocaleString();
+          const match = item.PhoneNumber.match(/^\+1(\d{3})(\d{3})(\d{4})$/);
+          if (match) {
+            item.PhoneNumber = `+1 (${match[1]}) ${match[2]}-${match[3]}`;
+          }
         });
         setTableData(result);
-        console.log('Items:', result);
       } catch (error) {
         console.error('Error fetching items:', error);
       }
@@ -110,7 +111,7 @@ const Leaders = () => {
         </button>
         <input
           type="text"
-          placeholder="Search by name, phone number, school, timestamp, or email"
+          placeholder="Search by name, team, phone number or email"
           value={searchQuery}
           onChange={handleSearchChange}
           className="search-input"
