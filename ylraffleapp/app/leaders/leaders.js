@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import { get } from 'aws-amplify/api';
@@ -10,8 +10,7 @@ import LoadingScreen from '../LoadingScreen';
 const Leaders = () => {
   const [tableData, setTableData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [leader, setLeader] = useState(false);
-  const [found, setFound] = useState(false);
+  const [leader, setLeader] = useState(null); // Initially null to indicate status is not yet determined
   const { auth } = useAuth();
   const router = useRouter();
 
@@ -35,7 +34,7 @@ const Leaders = () => {
           result += decoder.decode(value, { stream: !done });
         }
         result = JSON.parse(result);
-        
+
         result.forEach((item) => {
           item.Leader = item.Leader.toLocaleString();
           const match = item.PhoneNumber.match(/^\+1(\d{3})(\d{3})(\d{4})$/);
@@ -52,25 +51,12 @@ const Leaders = () => {
   }, []);
 
   useEffect(() => {
-    const searchLeader = async () => {
-      if (auth && auth.signInDetails && auth.signInDetails.loginId) {
-        const isLeader = tableData.some(element => element.Email === auth.signInDetails.loginId);
-        setLeader(isLeader);
-      } else {
-        setLeader(false);
-      }
-    };
-
-    const foundLeader = () => {
-      setFound(true);
-    };
-
-    const executeSearch = async () => {
-      await searchLeader();
-      foundLeader();
-    };
-
-    executeSearch();
+    if (auth && auth.signInDetails && auth.signInDetails.loginId && tableData.length > 0) {
+      const isLeader = tableData.some(element => element.Email === auth.signInDetails.loginId);
+      setLeader(isLeader);
+    } else if (tableData.length > 0) {
+      setLeader(false);
+    }
   }, [tableData, auth]);
 
   const handleSearchChange = (event) => {
@@ -89,7 +75,7 @@ const Leaders = () => {
       item.Email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  if (!found) {
+  if (leader === null) {
     return <LoadingScreen />;
   }
 

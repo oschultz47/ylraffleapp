@@ -11,9 +11,8 @@ const Directory = () => {
   const [tableData, setTableData] = useState([]);
   const [leaderData, setLeaderData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [leader, setLeader] = useState(false);
+  const [leader, setLeader] = useState(null); // Initially null to indicate status is not yet determined
   const [school, setSchool] = useState('ffffff');
-  const [found, setFound] = useState(false);
   const { auth } = useAuth();
   const router = useRouter();
 
@@ -101,16 +100,9 @@ const Directory = () => {
       }
     };
 
-    const foundLeader = () => {
-      setFound(true);
-    };
-
-    const executeSearch = async () => {
-      await searchLeader();
-      foundLeader();
-    };
-
-    executeSearch();
+    if (leaderData.length > 0 && auth) {
+      searchLeader();
+    }
   }, [leaderData, auth]);
 
   const handleSearchChange = (event) => {
@@ -133,7 +125,7 @@ const Directory = () => {
     return matchesSearchQuery && matchesSchool;
   });
 
-  if (!found) {
+  if (leader === null) {
     return <LoadingScreen />;
   }
 
