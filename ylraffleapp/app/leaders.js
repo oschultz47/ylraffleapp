@@ -4,11 +4,16 @@ import React, { useState, useEffect } from 'react';
 import { get } from 'aws-amplify/api';
 import './leaders.css';
 import { useRouter } from 'next/navigation';
+import { useAuth } from './context/AuthContext';
+import LoadingScreen from './LoadingScreen';
 
 
 const Leaders = () => {
   const [tableData, setTableData] = useState([]);
-    const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [leader, setLeader] = useState(false);
+  const [found, setFound] = useState(false);
+  const { auth } = useAuth();
     
     const router = useRouter();
 
@@ -47,6 +52,28 @@ const Leaders = () => {
     fetchItems();
   }, []);
 
+  useEffect(() => {
+    const searchLeader = async () => {
+      if (auth && auth.signInDetails && auth.signInDetails.loginId) {
+        const isLeader = tableData.some(element => element.Email === auth.signInDetails.loginId);
+        setLeader(isLeader);
+      } else {
+        setLeader(false);
+      }
+    };
+
+    const foundLeader = () => {
+      setFound(true);
+    };
+
+    const executeSearch = async () => {
+      await searchLeader();
+      foundLeader();
+    };
+
+    executeSearch();
+  }, [tableData, auth]);
+
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
     };
@@ -61,9 +88,19 @@ const Leaders = () => {
       item.PhoneNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.School.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.Email.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    
+  );
+  
+  if (!found) {
+    return <LoadingScreen />;
+  }
 
+  if (!leader) {
+    return (
+      <div className='access-denied'>
+        <p>Your account does not have access to this feature.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="leaders-container">
@@ -83,7 +120,7 @@ const Leaders = () => {
         <thead>
           <tr>
             <th>Name</th>
-            <th>School</th>          
+            <th>Team</th>          
             <th>Phone Number</th>
             <th>Email</th>  
           </tr>

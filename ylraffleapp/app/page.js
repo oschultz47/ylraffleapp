@@ -8,20 +8,23 @@ import { getCurrentUser } from 'aws-amplify/auth';
 import { get } from 'aws-amplify/api';
 import * as React from 'react';
 import ButtonAppBar from './appBar';
+import { useAuth } from './context/AuthContext';
 
 
 Amplify.configure(awsconfig);
 
 function Home() {
   
-  const [user, setUser] = React.useState({});
   const [tableData, setTableData] = React.useState([]);
+  const [leader, setLeader] = React.useState(false);
+
+  const { auth, setAuth } = useAuth();
 
 
   React.useEffect(() => {
     try {
       getCurrentUser().then((user) => {
-        setUser(user);
+        setAuth(user);
       });
     }
     catch {
@@ -52,7 +55,6 @@ function Home() {
           result[i].Timestamp = new Date(result[i].Timestamp).toLocaleString();
         }
         setTableData(result);
-        console.log('Items:', result);
       } catch (error) {
         console.error('Error fetching items:', error);
       }
@@ -61,18 +63,34 @@ function Home() {
   }, []);
 
   React.useEffect(() => {
-    console.log('Table Data:', tableData);
   }
-  , [tableData]);
+    , [tableData]);
+  
+  React.useEffect(() => {
+    setLeader(false);
+    tableData.forEach(element => {
+      if (!(auth.signInDetails.loginId == null) && auth.signInDetails.loginId === element.Email) {
+        setLeader(true);
+      }
+    });
+  }, [tableData, auth])
   
 
 
-  if (!user.signInDetails) {
+  if (auth == null) {
     return <div>Loading...</div>;
   }
 
   return (
-      <ButtonAppBar />
+    <div>
+    <ButtonAppBar />
+    <p>
+    {
+    leader === true
+      ? "here"
+      : "there"
+    }
+    </p></div>
   );
 }
 
