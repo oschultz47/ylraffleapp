@@ -23,6 +23,13 @@ export type AmplifyDependentResourcesAttributes = {
     }
   },
   "function": {
+    "addLeaderFunction": {
+      "Arn": "string",
+      "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
+      "Name": "string",
+      "Region": "string"
+    },
     "ylraffleapp55c1f14c": {
       "Arn": "string",
       "LambdaExecutionRole": "string",

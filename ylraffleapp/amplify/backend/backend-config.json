@@ -58,6 +58,11 @@
     }
   },
   "function": {
+    "addLeaderFunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "ylraffleapp55c1f14c": {
       "build": true,
       "providerPlugin": "awscloudformation",
@@ -70,6 +75,22 @@
     }
   },
   "parameters": {
+    "AMPLIFY_function_addLeaderFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "addLeaderFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_addLeaderFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "addLeaderFunction"
+        }
+      ]
+    },
     "AMPLIFY_function_ylraffleapp55c1f14c_deploymentBucketName": {
       "usedBy": [
         {
