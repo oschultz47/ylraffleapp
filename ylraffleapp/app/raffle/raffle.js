@@ -2,12 +2,68 @@
 
 import React, { useState, useEffect } from 'react';
 import { get } from 'aws-amplify/api';
-import './raffle.css'
+import { useAuth } from '../context/AuthContext';
+import LoadingScreen from '../LoadingScreen';
+import WinnerModal from './winnerModal';
+import './raffle.css';
 
 const Raffle = () => {
   const [names, setNames] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [winner, setWinner] = useState(null);
+  const [allNames, setAllNames] = useState([]);
+  const [leader, setLeader] = useState(null);
+  const [namesLoaded, setNamesLoaded] = useState(null);
+  const [school, setSchool] = useState('ffffff');
+  const { auth } = useAuth();
+
+  useEffect(() => {
+    const fetchAllNames = async () => {
+      try {
+        const restOperation = get({
+          apiName: 'ylraffleapi',
+          path: '/allnames',
+          httpMethod: 'GET'
+        });
+        const response = await restOperation.response;
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder('utf-8');
+        let result = '';
+        let done = false;
+
+        while (!done) {
+          const { value, done: streamDone } = await reader.read();
+          done = streamDone;
+          result += decoder.decode(value, { stream: !done });
+        }
+        result = JSON.parse(result);
+        setAllNames(result);
+      } catch (error) {
+        console.error('Error fetching all names:', error);
+      }
+    };
+    fetchAllNames();
+  }, []);
+
+  useEffect(() => {
+    const searchNames = async () => {
+      if (auth && auth.signInDetails && auth.signInDetails.loginId) {
+        const leader = allNames.find(element => element.Email === auth.signInDetails.loginId);
+        if (leader) {
+          setLeader(true);
+          setSchool(leader.School);
+        } else {
+          setLeader(false);
+        }
+      } else {
+        setLeader(false);
+      }
+    };
+
+    if (allNames.length > 0 && auth) {
+      searchNames();
+    }
+  }, [allNames, auth]);
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -28,26 +84,30 @@ const Raffle = () => {
           result += decoder.decode(value, { stream: !done });
         }
         result = JSON.parse(result);
-        result.forEach((item) => {
+
+        let filteredResponse = result;
+        if (school !== 'Admin') {
+          filteredResponse = result.filter(item => item.School === school);
+        }
+
+        filteredResponse.forEach((item) => {
           item.Timestamp = new Date(item.Timestamp).toLocaleString();
         });
-        setTableData(result);
+        setTableData(filteredResponse);
       } catch (error) {
         console.error('Error fetching items:', error);
       }
     };
-    fetchItems();
-  }, []);
+
+    if (school) {
+      fetchItems();
+    }
+  }, [school]);
 
   useEffect(() => {
     setNames(tableData.map((item) => item.Name));
+    setNamesLoaded(true);
   }, [tableData]);
-
-  useEffect(() => {
-    if (names.length && !document.querySelector('.name').style.position) {
-      scatterItems();
-    }
-  }, [names]);
 
   useEffect(() => {
     if (names.length === 1) {
@@ -55,55 +115,49 @@ const Raffle = () => {
     }
   }, [names]);
 
-  useEffect(() => {
-    if (winner) {
-      alert(`The winner is ${winner}!`);
-    }
-  }, [winner]);
-    
-  const calculateFontSize = (length) => {
-    return Math.max(10, 50 - length); // Ensure a minimum font size of 10px
+  const handleCloseModal = () => {
+    setWinner(null);
+    resetRaffle();
   };
 
-  const scatterItems = () => {
-    const nameElements = document.querySelectorAll('.name');
-    const button = document.getElementById('eliminateButton');
-    const buttonRect = button.getBoundingClientRect();
-    const positions = [];
-      const margin = calculateFontSize(names.length) * 2;
-    const addPosition = (top, left, width, height) => {
-      positions.push({ top, left, width, height });
-    };
+  const resetRaffle = () => {
+    const fetchItems = async () => {
+      try {
+        const restOperation = get({
+          apiName: 'ylraffleapi',
+          path: '/raffle',
+        });
+        const response = await restOperation.response;
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder('utf-8');
+        let result = '';
+        let done = false;
 
-    addPosition(buttonRect.top - margin, buttonRect.left - margin, buttonRect.width + 2 * margin, buttonRect.height + 2 * margin);
-
-    nameElements.forEach((name) => {
-      let top, left;
-      let overlap;
-      do {
-        overlap = false;
-        top = Math.random() * (window.innerHeight - name.clientHeight);
-        left = Math.random() * (window.innerWidth - name.clientWidth);
-
-        for (let pos of positions) {
-          if (
-            left < pos.left + pos.width &&
-            left + name.clientWidth > pos.left &&
-            top < pos.top + pos.height &&
-            top + name.clientHeight > pos.top
-          ) {
-            overlap = true;
-            break;
-          }
+        while (!done) {
+          const { value, done: streamDone } = await reader.read();
+          done = streamDone;
+          result += decoder.decode(value, { stream: !done });
         }
-      } while (overlap);
+        result = JSON.parse(result);
 
-      addPosition(top, left, name.clientWidth, name.clientHeight);
+        let filteredResponse = result;
+        if (school !== 'Admin') {
+          filteredResponse = result.filter(item => item.School === school);
+        }
 
-      name.style.position = 'absolute';
-      name.style.top = `${top}px`;
-      name.style.left = `${left}px`;
-    });
+        filteredResponse.forEach((item) => {
+          item.Timestamp = new Date(item.Timestamp).toLocaleString();
+        });
+        setTableData(filteredResponse);
+      } catch (error) {
+        console.error('Error fetching items:', error);
+      }
+    }
+      fetchItems();
+  };
+
+  const calculateFontSize = (length) => {
+    return Math.max(10, 50 - length); // Ensure a minimum font size of 10px
   };
 
   const eliminateHalf = () => {
@@ -114,13 +168,26 @@ const Raffle = () => {
       remainingNames.splice(randomIndex, 1);
     }
     setNames(remainingNames);
-    };
-    
+  };
+
+  if (namesLoaded === null || leader === null) {
+    return <LoadingScreen />;
+  }
+
+  if (namesLoaded && !leader) {
+    return (
+      <div className='access-denied'>
+        <p>Your account does not have access to this feature.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="raffle-container">
-      <div id="names">
+      {winner && <WinnerModal winner={winner} onClose={handleCloseModal} />}
+      <div id="names" className="names-grid">
         {names.map((name, index) => (
-          <div key={index} className="name" style={{ margin: '5px 0', fontSize: `${calculateFontSize(names.length)}px` }}>
+          <div key={index} className="name" style={{ fontSize: `${calculateFontSize(names.length)}px` }}>
             {name}
           </div>
         ))}

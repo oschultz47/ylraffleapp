@@ -6,6 +6,23 @@ exports.handler = async (event) => {
     TableName: 'BVYLRaffleDatabase',
   };
 
+  const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(); // Calculate ISO timestamp for 24 hours ago
+
+  if (event.path === '/raffle') {
+    params = {
+      ...params,
+      FilterExpression: '#timestamp >= :oneDayAgo AND #leader = :false',
+      ExpressionAttributeNames: {
+        '#timestamp': 'timestamp',
+        '#leader': 'Leader',
+      },
+      ExpressionAttributeValues: {
+        ':oneDayAgo': oneDayAgo,
+        ':false': false,
+      },
+    };
+  }
+
   if (event.path === '/leaders') {
     params = {
       ...params,
@@ -31,8 +48,6 @@ exports.handler = async (event) => {
       },
     };
   }
-    
-
 
   try {
     const data = await dynamodb.scan(params).promise();

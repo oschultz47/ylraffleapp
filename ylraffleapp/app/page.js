@@ -9,7 +9,7 @@ import { get } from 'aws-amplify/api';
 import * as React from 'react';
 import ButtonAppBar from './appBar';
 import { useAuth } from './context/AuthContext';
-
+import './home.css'; // Import your stylesheet
 
 Amplify.configure(awsconfig);
 
@@ -20,14 +20,12 @@ function Home() {
 
   const { auth, setAuth } = useAuth();
 
-
   React.useEffect(() => {
     try {
       getCurrentUser().then((user) => {
         setAuth(user);
       });
-    }
-    catch {
+    } catch {
       console.error('No user');
     }
   }, []);
@@ -76,7 +74,14 @@ function Home() {
   }
 
   return (
-    <ButtonAppBar />
+    <div className="app-container">
+      <ButtonAppBar />
+      <div className="home-container">
+        <div className="text-box">
+          <h1 className="welcome-text">Welcome to BVYL Raffle!</h1>
+        </div>
+      </div>
+    </div>
   );
 }
 
