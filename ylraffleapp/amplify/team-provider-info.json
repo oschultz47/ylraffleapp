@@ -19,7 +19,7 @@
       "function": {
         "ylraffleapp55c1f14c": {
           "deploymentBucketName": "amplify-ylraffleapp-dev-162740-deployment",
-          "s3Key": "amplify-builds/ylraffleapp55c1f14c-4e585039596c474f3864-build.zip"
+          "s3Key": "amplify-builds/ylraffleapp55c1f14c-4849586b52784e356b33-build.zip"
         },
         "ylraffleapp88b5f6df": {
           "deploymentBucketName": "amplify-ylraffleapp-dev-162740-deployment",

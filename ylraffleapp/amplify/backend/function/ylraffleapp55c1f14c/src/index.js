@@ -12,7 +12,7 @@ exports.handler = async (event) => {
       TableName: 'BVYLRaffleDatabase',
       FilterExpression: '#timestamp >= :oneDayAgo',
       ExpressionAttributeNames: {
-        '#timestamp': 'timestamp',
+        '#timestamp': 'Timestamp',
       },
       ExpressionAttributeValues: {
         ':oneDayAgo': oneDayAgo,

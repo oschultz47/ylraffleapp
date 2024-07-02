@@ -183,6 +183,18 @@ const Leaders = () => {
     setCurrentEntry({ ...currentEntry, Name: e.target.value });
   };
 
+  const handlePhoneChange = (e) => {
+    setCurrentEntry({ ...currentEntry, PhoneNumber: e.target.value });
+  };
+
+  const handleEmailChange = (e) => {
+    setCurrentEntry({ ...currentEntry, Email: e.target.value });
+  };
+
+  const handleSchoolChange = (e) => {
+    setCurrentEntry({ ...currentEntry, School: e.target.value });
+  };
+
   const filteredData = tableData.filter(
     (item) =>
       item.Name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -306,7 +318,7 @@ const Leaders = () => {
               </label>
               <label>
                 Team:
-                <select name="team" value={currentEntry?.School || ''} onChange={handleInputChange} required>
+                <select name="team" value={currentEntry?.School || ''} onChange={handleSchoolChange} required>
                   <option value="Consol">Consol</option>
                   <option value="CSHS">CSHS</option>
                   <option value="Bryan">Bryan</option>
@@ -323,13 +335,13 @@ const Leaders = () => {
               </label>
               <label>
                 Phone Number:
-                <InputMask mask="+1 (999) 999-9999" name="phone" value={currentEntry?.PhoneNumber || ''} onChange={handleInputChange} required>
+                <InputMask mask="+1 (999) 999-9999" name="phone" value={currentEntry?.PhoneNumber || ''} onChange={handlePhoneChange} required>
                   {(inputProps) => <input {...inputProps} type="text" />}
                 </InputMask>
               </label>
               <label>
                 Email:
-                <input type="email" name="email" value={currentEntry?.Email || ''} onChange={handleInputChange} required />
+                <input type="email" name="email" value={currentEntry?.Email || ''} onChange={handleEmailChange} required />
               </label>
               <button className="submit-button" type="submit">Save Changes</button>
             </form>

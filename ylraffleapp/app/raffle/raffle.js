@@ -85,6 +85,7 @@ const Raffle = () => {
           result += decoder.decode(value, { stream: !done });
         }
         result = JSON.parse(result);
+        console.log(result);
 
         let filteredResponse = result;
         if (school !== 'Admin') {
