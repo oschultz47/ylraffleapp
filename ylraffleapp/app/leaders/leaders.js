@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import InputMask from 'react-input-mask';
-import { get, post } from 'aws-amplify/api';
+import { get, post, put, del } from 'aws-amplify/api';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../context/AuthContext';
 import LoadingScreen from '../LoadingScreen';
@@ -12,7 +12,10 @@ const Leaders = () => {
   const [leader, setLeader] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [newLeader, setNewLeader] = useState({ name: '', team: '', phone: '', email: '' });
+  const [currentEntry, setCurrentEntry] = useState(null);
   const { auth } = useAuth();
   const router = useRouter();
 
@@ -122,6 +125,64 @@ const Leaders = () => {
     }
   };
 
+  const handleEditClick = (entry) => {
+    setCurrentEntry(entry);
+    setEditModalVisible(true);
+  };
+
+  const handleEditSubmit = async (event) => {
+    event.preventDefault();
+
+    const formattedLeader = {
+      name: currentEntry.Name,
+      team: currentEntry.School,
+      phone: formatPhoneNumber(currentEntry.PhoneNumber),
+      email: currentEntry.Email,
+    };
+
+    try {
+      const restOperation = put({
+        apiName: 'ylraffleapi',
+        path: `/leaders/${currentEntry.id}`,
+        options: {
+          body: formattedLeader,
+        },
+      });
+
+      await restOperation.response;
+
+      fetchItems();
+      setEditModalVisible(false);
+    } catch (error) {
+      console.log('PUT call failed: ', error);
+    }
+  };
+
+  const handleDeleteClick = (entry) => {
+    setCurrentEntry(entry);
+    setDeleteModalVisible(true);
+  };
+
+  const handleDeleteSubmit = async () => {
+    try {
+      const restOperation = del({
+        apiName: 'ylraffleapi',
+        path: `/leaders/${currentEntry.id}`,
+      });
+
+      await restOperation.response;
+
+      fetchItems();
+      setDeleteModalVisible(false);
+    } catch (error) {
+      console.log('DELETE call failed: ', error);
+    }
+  };
+
+  const handleNameChange = (e) => {
+    setCurrentEntry({ ...currentEntry, Name: e.target.value });
+  };
+
   const filteredData = tableData.filter(
     (item) =>
       item.Name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -144,7 +205,7 @@ const Leaders = () => {
 
   return (
     <div>
-      <div className={`leaders-container ${showModal ? 'blur' : ''}`}>
+      <div className={`leaders-container ${showModal || editModalVisible || deleteModalVisible ? 'blur' : ''}`}>
         <div className="top-bar">
           <button className="home-button" onClick={() => handleNavigate('/')}>
             Home
@@ -169,6 +230,7 @@ const Leaders = () => {
               <th>Team</th>
               <th>Phone Number</th>
               <th>Email</th>
+              {isAdmin && <th>Actions</th>}
             </tr>
           </thead>
           <tbody>
@@ -178,6 +240,12 @@ const Leaders = () => {
                 <td data-label="Team">{item.School}</td>
                 <td data-label="Phone Number">{item.PhoneNumber}</td>
                 <td data-label="Email">{item.Email}</td>
+                {isAdmin && (
+                  <td data-label="Actions" className="actions">
+                    <button onClick={() => handleEditClick(item)}>Edit</button>
+                    <button onClick={() => handleDeleteClick(item)}>Delete</button>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
@@ -213,7 +281,7 @@ const Leaders = () => {
               </label>
               <label>
                 Phone Number:
-                <InputMask mask="(999) 999-9999" name="phone" ref={phoneRef} required>
+                <InputMask mask="+1 (999) 999-9999" name="phone" ref={phoneRef} required>
                   {(inputProps) => <input {...inputProps} type="text" />}
                 </InputMask>
               </label>
@@ -223,6 +291,59 @@ const Leaders = () => {
               </label>
               <button className="submit-button" type="submit">Add Leader</button>
             </form>
+          </div>
+        </div>
+      )}
+      {editModalVisible && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <span className="close" onClick={() => setEditModalVisible(false)}>&times;</span>
+            <h2>Edit Leader</h2>
+            <form onSubmit={handleEditSubmit}>
+              <label>
+                Name:
+                <input type="text" name="name" value={currentEntry?.Name || ''} onChange={handleNameChange} required />
+              </label>
+              <label>
+                Team:
+                <select name="team" value={currentEntry?.School || ''} onChange={handleInputChange} required>
+                  <option value="Consol">Consol</option>
+                  <option value="CSHS">CSHS</option>
+                  <option value="Bryan">Bryan</option>
+                  <option value="Rudder">Rudder</option>
+                  <option value="Navasota">Navasota</option>
+                  <option value="Caldwell">Caldwell</option>
+                  <option value="Brenham">Brenham</option>
+                  <option value="Hearne">Hearne</option>
+                  <option value="YoungLives">YoungLives</option>
+                  <option value="Capernaum">Capernaum</option>
+                  <option value="College">College</option>
+                  <option value="Admin">Admin</option>
+                </select>
+              </label>
+              <label>
+                Phone Number:
+                <InputMask mask="+1 (999) 999-9999" name="phone" value={currentEntry?.PhoneNumber || ''} onChange={handleInputChange} required>
+                  {(inputProps) => <input {...inputProps} type="text" />}
+                </InputMask>
+              </label>
+              <label>
+                Email:
+                <input type="email" name="email" value={currentEntry?.Email || ''} onChange={handleInputChange} required />
+              </label>
+              <button className="submit-button" type="submit">Save Changes</button>
+            </form>
+          </div>
+        </div>
+      )}
+      {deleteModalVisible && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <span className="close" onClick={() => setDeleteModalVisible(false)}>&times;</span>
+            <h2>Delete Leader</h2>
+            <p>Are you sure you want to delete this entry?</p>
+            <button className="submit-button" onClick={handleDeleteSubmit}>Yes</button>
+            <button className="submit-button" onClick={() => setDeleteModalVisible(false)}>No</button>
           </div>
         </div>
       )}

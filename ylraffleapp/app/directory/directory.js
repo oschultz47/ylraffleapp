@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { get } from 'aws-amplify/api';
+import React, { useState, useEffect, useRef } from 'react';
+import { get, put, del } from 'aws-amplify/api';
 import './directory.css';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../context/AuthContext';
@@ -11,10 +11,15 @@ const Directory = () => {
   const [tableData, setTableData] = useState([]);
   const [leaderData, setLeaderData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [leader, setLeader] = useState(null); // Initially null to indicate status is not yet determined
+  const [leader, setLeader] = useState(null);
   const [school, setSchool] = useState('ffffff');
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [currentEntry, setCurrentEntry] = useState(null);
   const { auth } = useAuth();
   const router = useRouter();
+
+  const nameRef = useRef(null);
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -108,6 +113,68 @@ const Directory = () => {
     router.push(path);
   };
 
+  const handleEditClick = (entry) => {
+    setCurrentEntry(entry);
+    setEditModalVisible(true);
+  };
+
+  const handleDeleteClick = (entry) => {
+    setCurrentEntry(entry);
+    setDeleteModalVisible(true);
+  };
+
+  const handleEditSubmit = async (event) => {
+    event.preventDefault();
+
+    const updatedEntry = {
+      ...currentEntry,
+      Name: nameRef.current.value
+    };
+
+    try {
+      const restOperation = put({
+        apiName: 'ylraffleapi',
+        path: `/kids/${currentEntry.id}`,
+        options: {
+          body: updatedEntry,
+        },
+      });
+
+      await restOperation.response;
+
+      setTableData((prevData) =>
+        prevData.map((item) =>
+          item.id === currentEntry.id ? updatedEntry : item
+        )
+      );
+      setEditModalVisible(false);
+    } catch (error) {
+      console.log('PUT call failed: ', error);
+    }
+  };
+
+  const handleDeleteSubmit = async () => {
+    try {
+      const restOperation = del({
+        apiName: 'ylraffleapi',
+        path: `/kids/${currentEntry.id}`,
+      });
+
+      await restOperation.response;
+
+      setTableData((prevData) =>
+        prevData.filter((item) => item.id !== currentEntry.id)
+      );
+      setDeleteModalVisible(false);
+    } catch (error) {
+      console.log('DELETE call failed: ', error);
+    }
+  };
+
+  const handleNameChange = (e) => {
+    setCurrentEntry({ ...currentEntry, Name: e.target.value });
+  };
+
   const filteredData = tableData.filter((item) => {
     const matchesSearchQuery =
       item.Name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -133,39 +200,74 @@ const Directory = () => {
   }
 
   return (
-    <div className="directory-container">
-      <div className="top-bar">
-        <button className="home-button" onClick={() => handleNavigate('/')}>
-          Home
-        </button>
-        <input
-          type="text"
-          placeholder="Search by name, school, phone number, or last time at club"
-          value={searchQuery}
-          onChange={handleSearchChange}
-          className="search-input"
-        />
-      </div>
-      <table className="directory-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>School</th>
-            <th>Phone Number</th>
-            <th>Last at Club</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredData.map((item, index) => (
-            <tr key={index}>
-              <td data-label="Name">{item.Name}</td>
-              <td data-label="School">{item.School}</td>
-              <td data-label="Phone Number">{item.PhoneNumber}</td>
-              <td data-label="Last at Club">{item.Timestamp}</td>
+    <div>
+      <div className={`directory-container ${editModalVisible || deleteModalVisible ? 'blur' : ''}`}>
+        <div className="top-bar">
+          <button className="home-button" onClick={() => handleNavigate('/')}>
+            Home
+          </button>
+          <input
+            type="text"
+            placeholder="Search by name, school, phone number, or last time at club"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className="search-input"
+          />
+        </div>
+        <table className="directory-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>School</th>
+              <th>Phone Number</th>
+              <th>Last at Club</th>
+              {leader && <th>Actions</th>}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredData.map((item, index) => (
+              <tr key={index}>
+                <td data-label="Name">{item.Name}</td>
+                <td data-label="School">{item.School}</td>
+                <td data-label="Phone Number">{item.PhoneNumber}</td>
+                <td data-label="Last at Club">{item.Timestamp}</td>
+                {leader && (
+                  <td data-label="Actions" className="actions">
+                    <button onClick={() => handleEditClick(item)}>Edit</button>
+                    <button onClick={() => handleDeleteClick(item)}>Delete</button>
+                  </td>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {editModalVisible && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <span className="close" onClick={() => setEditModalVisible(false)}>&times;</span>
+            <h2>Edit Entry</h2>
+            <form onSubmit={handleEditSubmit}>
+              <label>
+                Name:
+                <input type="text" name="name" ref={nameRef} value={currentEntry?.Name || ''} onChange={handleNameChange} required />
+              </label>
+              <button className="submit-button" type="submit">Save Changes</button>
+            </form>
+          </div>
+        </div>
+      )}
+      {deleteModalVisible && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <span className="close" onClick={() => setDeleteModalVisible(false)}>&times;</span>
+            <h2>Delete Entry</h2>
+            <p>Are you sure you want to delete this entry?</p>
+            <button className="submit-button" onClick={handleDeleteSubmit}>Yes</button>
+            <button className="submit-button" onClick={() => setDeleteModalVisible(false)}>No</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
