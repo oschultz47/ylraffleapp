@@ -2,23 +2,20 @@ const AWS = require('aws-sdk');
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
-  let params = {
-    TableName: 'BVYLRaffleDatabase',
-  };
+  let params = {};
 
   const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(); // Calculate ISO timestamp for 24 hours ago
 
   if (event.path === '/raffle') {
     params = {
       ...params,
-      FilterExpression: '#timestamp >= :oneDayAgo AND #leader = :false',
+      TableName: 'BVYLRaffleDatabase',
+      FilterExpression: '#timestamp >= :oneDayAgo',
       ExpressionAttributeNames: {
         '#timestamp': 'timestamp',
-        '#leader': 'Leader',
       },
       ExpressionAttributeValues: {
         ':oneDayAgo': oneDayAgo,
-        ':false': false,
       },
     };
   }
@@ -26,32 +23,37 @@ exports.handler = async (event) => {
   if (event.path === '/leaders') {
     params = {
       ...params,
-      FilterExpression: '#leader = :true',
-      ExpressionAttributeNames: {
-        '#leader': 'Leader',
-      },
-      ExpressionAttributeValues: {
-        ':true': true,
-      },
+      TableName: 'BVYLLeaders',
     };
   }
     
   if (event.path === '/kids') {
     params = {
       ...params,
-      FilterExpression: '#leader = :false',
-      ExpressionAttributeNames: {
-        '#leader': 'Leader',
-      },
-      ExpressionAttributeValues: {
-        ':false': false,
-      },
+      TableName: 'BVYLRaffleDatabase',
     };
   }
 
   try {
-    const data = await dynamodb.scan(params).promise();
-    const items = data.Items || [];
+    let items = [];
+
+    if (event.path === '/allnames') {
+      const raffleParams = {
+        TableName: 'BVYLRaffleDatabase',
+      };
+
+      const leadersParams = {
+        TableName: 'BVYLLeaders',
+      };
+
+      const raffleData = await dynamodb.scan(raffleParams).promise();
+      const leadersData = await dynamodb.scan(leadersParams).promise();
+
+      items = [...(raffleData.Items || []), ...(leadersData.Items || [])];
+    } else {
+      const data = await dynamodb.scan(params).promise();
+      items = data.Items || [];
+    }
 
     return {
       statusCode: 200,

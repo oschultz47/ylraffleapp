@@ -5,13 +5,12 @@ exports.handler = async (event) => {
     const data = JSON.parse(event.body);
 
     const params = {
-        TableName: 'BVYLRaffleDatabase', // DynamoDB table name from environment variables
+        TableName: 'BVYLLeaders', // DynamoDB table name from environment variables
         Item: {
             Name: data.name,
-            Team: data.team,
+            School: data.team,
             PhoneNumber: data.phone,
             Email: data.email,
-            Leader: true
         }
     };
 

@@ -39,7 +39,6 @@ const Directory = () => {
 
         result.forEach((item) => {
           item.Timestamp = new Date(item.Timestamp).toLocaleString();
-          item.Leader = item.Leader.toLocaleString();
           const match = item.PhoneNumber.match(/^\+1(\d{3})(\d{3})(\d{4})$/);
           if (match) {
             item.PhoneNumber = `+1 (${match[1]}) ${match[2]}-${match[3]}`;
@@ -73,10 +72,6 @@ const Directory = () => {
           result += decoder.decode(value, { stream: !done });
         }
         result = JSON.parse(result);
-
-        result.forEach((item) => {
-          item.Leader = item.Leader.toLocaleString();
-        });
         setLeaderData(result);
       } catch (error) {
         console.error('Error fetching leaders:', error);

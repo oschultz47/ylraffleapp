@@ -1,3 +1,8 @@
+/* Apply border-box globally for consistent sizing */
+* {
+  box-sizing: border-box;
+}
+
 .leaders-container {
   width: 100%;
   margin: 0 auto;
@@ -15,16 +20,17 @@
   align-items: center;
   margin-bottom: 20px;
   width: 100%;
-  box-sizing: border-box;
 }
 
 .home-button, .add-leader-button {
   background-color: gray;
   color: white;
   border: none;
-  padding: 10px 10px;
+  padding: 12px 12px;
   cursor: pointer;
-  flex-shrink: 0; /* Prevent buttons from shrinking */
+  flex-shrink: 0; /* Prevent shrinking */
+  text-align: center;
+  font-size: 16px;
 }
 
 .add-leader-button {
@@ -32,10 +38,10 @@
 }
 
 .search-input {
-  padding: 10px;
-  margin: 0 10px;
+  padding: 11px 10px;
+  margin: 0 8px;
   flex-grow: 1; /* Allow input to grow and take available space */
-  box-sizing: border-box;
+  font-size: 16px;
 }
 
 .leaders-table {
@@ -157,7 +163,6 @@ input, select {
   margin: 5px 0 10px 0;
   display: inline-block;
   border: 1px solid #ccc;
-  box-sizing: border-box;
 }
 
 .submit-button {
@@ -167,12 +172,8 @@ input, select {
   margin: 8px 0;
   border: none;
   cursor: pointer;
+  width: 100%; /* Ensure full width */
 }
-
-.submit-button{
-  width:100%;
-}
-
 
 button:hover {
   opacity: 0.8;

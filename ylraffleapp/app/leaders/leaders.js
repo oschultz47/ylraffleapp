@@ -42,7 +42,6 @@ const Leaders = () => {
       result = JSON.parse(result);
 
       result.forEach((item) => {
-        item.Leader = item.Leader.toLocaleString();
         const match = item.PhoneNumber.match(/^\+1(\d{3})(\d{3})(\d{4})$/);
         if (match) {
           item.PhoneNumber = `+1 (${match[1]}) ${match[2]}-${match[3]}`;
@@ -144,7 +143,7 @@ const Leaders = () => {
   }
 
   return (
-    <>
+    <div>
       <div className={`leaders-container ${showModal ? 'blur' : ''}`}>
         <div className="top-bar">
           <button className="home-button" onClick={() => handleNavigate('/')}>
@@ -227,7 +226,7 @@ const Leaders = () => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 
