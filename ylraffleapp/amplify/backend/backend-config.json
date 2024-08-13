@@ -1,6 +1,6 @@
 {
   "api": {
-    "apiae2c3e0f": {
+    "ylraffle": {
       "dependsOn": [
         {
           "attributes": [
@@ -8,7 +8,7 @@
             "Arn"
           ],
           "category": "function",
-          "resourceName": "ylraffleapp88b5f6df"
+          "resourceName": "RaffleQueryDB"
         }
       ],
       "providerPlugin": "awscloudformation",
@@ -23,6 +23,14 @@
           ],
           "category": "function",
           "resourceName": "ylraffleapp55c1f14c"
+        },
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "addLeaderFunction"
         }
       ],
       "providerPlugin": "awscloudformation",
@@ -58,7 +66,17 @@
     }
   },
   "function": {
+    "RaffleQueryDB": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "addLeaderFunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "ylraffleapp2fdf0a84": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
@@ -75,6 +93,22 @@
     }
   },
   "parameters": {
+    "AMPLIFY_function_RaffleQueryDB_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "RaffleQueryDB"
+        }
+      ]
+    },
+    "AMPLIFY_function_RaffleQueryDB_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "RaffleQueryDB"
+        }
+      ]
+    },
     "AMPLIFY_function_addLeaderFunction_deploymentBucketName": {
       "usedBy": [
         {
@@ -88,6 +122,22 @@
         {
           "category": "function",
           "resourceName": "addLeaderFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_ylraffleapp2fdf0a84_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "ylraffleapp2fdf0a84"
+        }
+      ]
+    },
+    "AMPLIFY_function_ylraffleapp2fdf0a84_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "ylraffleapp2fdf0a84"
         }
       ]
     },

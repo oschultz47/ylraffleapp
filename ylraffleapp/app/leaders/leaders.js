@@ -27,7 +27,7 @@ const Leaders = () => {
   const fetchItems = async () => {
     try {
       const restOperation = get({
-        apiName: 'ylraffleapi',
+        apiName: 'ylraffle',
         path: '/leaders',
         httpMethod: 'GET',
       });
@@ -93,7 +93,7 @@ const Leaders = () => {
 
   const formatPhoneNumber = (phoneNumber) => {
     const digits = phoneNumber.replace(/\D/g, '');
-    return `+1${digits}`;
+    return `+${digits}`;
   };
 
   const handleSubmit = async (event) => {
@@ -108,7 +108,7 @@ const Leaders = () => {
 
     try {
       const restOperation = post({
-        apiName: 'ylraffleapi',
+        apiName: 'ylraffle',
         path: '/leaders',
         options: {
           body: formattedLeader,
@@ -165,10 +165,14 @@ const Leaders = () => {
 
   const handleDeleteSubmit = async () => {
     try {
+      var phone = formatPhoneNumber(currentEntry.PhoneNumber);
+      
+      const leaderpath = `/leaders/${(phone)}`
       const restOperation = del({
-        apiName: 'ylraffleapi',
-        path: `/leaders/${currentEntry.id}`,
+        apiName: 'ylraffle',
+        path: leaderpath
       });
+      console.log(leaderpath);
 
       await restOperation.response;
 

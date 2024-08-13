@@ -28,11 +28,19 @@
         "addLeaderFunction": {
           "deploymentBucketName": "amplify-ylraffleapp-dev-162740-deployment",
           "s3Key": "amplify-builds/addLeaderFunction-35515367727368327379-build.zip"
+        },
+        "ylraffleapp2fdf0a84": {
+          "deploymentBucketName": "amplify-ylraffleapp-dev-162740-deployment",
+          "s3Key": "amplify-builds/ylraffleapp2fdf0a84-305859355879536c4f30-build.zip"
+        },
+        "RaffleQueryDB": {
+          "deploymentBucketName": "amplify-ylraffleapp-dev-162740-deployment",
+          "s3Key": "amplify-builds/RaffleQueryDB-51464e7168765373496f-build.zip"
         }
       },
       "api": {
-        "apiae2c3e0f": {},
-        "ylraffleapi": {}
+        "ylraffleapi": {},
+        "ylraffle": {}
       }
     }
   }

@@ -5,13 +5,28 @@
       "name": "/raffle",
       "lambdaFunction": "ylraffleapp55c1f14c",
       "permissions": {
-        "setting": "private",
-        "auth": [
-          "create",
-          "read",
-          "update",
-          "delete"
-        ]
+        "setting": "open"
+      }
+    },
+    "/leaders": {
+      "name": "/leaders",
+      "lambdaFunction": "addLeaderFunction",
+      "permissions": {
+        "setting": "open"
+      }
+    },
+    "/allnames": {
+      "name": "/allnames",
+      "lambdaFunction": "ylraffleapp55c1f14c",
+      "permissions": {
+        "setting": "open"
+      }
+    },
+    "/kids": {
+      "name": "/kids",
+      "lambdaFunction": "ylraffleapp55c1f14c",
+      "permissions": {
+        "setting": "open"
       }
     }
   }

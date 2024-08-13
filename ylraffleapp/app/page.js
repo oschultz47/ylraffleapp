@@ -34,7 +34,7 @@ function Home() {
     const fetchItems = async () => {
       try {
         const restOperation = get({
-          apiName: 'ylraffleapi',
+          apiName: 'ylraffle',
           path: '/raffle'
         });
         const response = await restOperation.response;

@@ -25,7 +25,7 @@ const Directory = () => {
     const fetchItems = async () => {
       try {
         const restOperation = get({
-          apiName: 'ylraffleapi',
+          apiName: 'ylraffle',
           path: '/kids',
           httpMethod: 'GET'
         });
@@ -61,7 +61,7 @@ const Directory = () => {
     const fetchLeaders = async () => {
       try {
         const restOperation = get({
-          apiName: 'ylraffleapi',
+          apiName: 'ylraffle',
           path: '/leaders',
           httpMethod: 'GET'
         });
@@ -133,7 +133,7 @@ const Directory = () => {
 
     try {
       const restOperation = put({
-        apiName: 'ylraffleapi',
+        apiName: 'ylraffle',
         path: `/kids/${currentEntry.id}`,
         options: {
           body: updatedEntry,
@@ -156,7 +156,7 @@ const Directory = () => {
   const handleDeleteSubmit = async () => {
     try {
       const restOperation = del({
-        apiName: 'ylraffleapi',
+        apiName: 'ylraffle',
         path: `/kids/${currentEntry.id}`,
       });
 

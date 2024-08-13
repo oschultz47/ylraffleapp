@@ -21,7 +21,7 @@ const Raffle = () => {
     const fetchAllNames = async () => {
       try {
         const restOperation = get({
-          apiName: 'ylraffleapi',
+          apiName: 'ylraffle',
           path: '/allnames',
           httpMethod: 'GET'
         });
@@ -70,7 +70,7 @@ const Raffle = () => {
     const fetchItems = async () => {
       try {
         const restOperation = get({
-          apiName: 'ylraffleapi',
+          apiName: 'ylraffle',
           path: '/raffle',
         });
         const response = await restOperation.response;
@@ -126,7 +126,7 @@ const Raffle = () => {
     const fetchItems = async () => {
       try {
         const restOperation = get({
-          apiName: 'ylraffleapi',
+          apiName: 'ylraffle',
           path: '/raffle',
         });
         const response = await restOperation.response;
