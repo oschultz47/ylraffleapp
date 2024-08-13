@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "paths": {
+    "/raffle": {
+      "name": "/raffle",
+      "lambdaFunction": "RaffleQueryDB",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
+    },
+    "/leaders": {
+      "name": "/leaders",
+      "lambdaFunction": "RaffleQueryDB",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
+    },
+    "/allnames": {
+      "name": "/allnames",
+      "lambdaFunction": "RaffleQueryDB",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
+    },
+    "/kids": {
+      "name": "/kids",
+      "lambdaFunction": "RaffleQueryDB",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
+    }
+  }
+}
