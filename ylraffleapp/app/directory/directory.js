@@ -109,6 +109,11 @@ const Directory = () => {
     setSearchQuery(event.target.value);
   };
 
+  const formatPhoneNumber = (phoneNumber) => {
+    const digits = phoneNumber.replace(/\D/g, '');
+    return `+${digits}`;
+  };
+
   const handleNavigate = (path) => {
     router.push(path);
   };
@@ -155,15 +160,16 @@ const Directory = () => {
 
   const handleDeleteSubmit = async () => {
     try {
+      const phone = formatPhoneNumber(currentEntry.PhoneNumber);
       const restOperation = del({
         apiName: 'ylraffle',
-        path: `/kids/${currentEntry.id}`,
+        path: `/kids/${phone}`,
       });
 
       await restOperation.response;
 
       setTableData((prevData) =>
-        prevData.filter((item) => item.id !== currentEntry.id)
+        prevData.filter((item) => item.PhoneNumber !== currentEntry.PhoneNumber)
       );
       setDeleteModalVisible(false);
     } catch (error) {
