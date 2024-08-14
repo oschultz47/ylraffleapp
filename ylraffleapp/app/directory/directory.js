@@ -137,11 +137,12 @@ const Directory = () => {
     };
 
     try {
+      const phone = formatPhoneNumber(currentEntry.PhoneNumber);
       const restOperation = put({
         apiName: 'ylraffle',
-        path: `/kids/${currentEntry.id}`,
+        path: `/kids/${phone}`,
         options: {
-          body: updatedEntry,
+          body: updatedEntry.Name,
         },
       });
 
@@ -149,7 +150,7 @@ const Directory = () => {
 
       setTableData((prevData) =>
         prevData.map((item) =>
-          item.id === currentEntry.id ? updatedEntry : item
+          item.PhoneNumber === currentEntry.PhoneNumber ? updatedEntry : item
         )
       );
       setEditModalVisible(false);
