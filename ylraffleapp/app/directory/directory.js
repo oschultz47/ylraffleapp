@@ -22,12 +22,18 @@ const Directory = () => {
   const nameRef = useRef(null);
 
   useEffect(() => {
+    // Check if user is authenticated, if not, redirect to home
+    if (!auth) {
+      router.push('/');
+      return;
+    }
+
     const fetchItems = async () => {
       try {
         const restOperation = get({
           apiName: 'ylraffle',
           path: '/kids',
-          httpMethod: 'GET'
+          httpMethod: 'GET',
         });
         const response = await restOperation.response;
         const reader = response.body.getReader();
@@ -54,16 +60,19 @@ const Directory = () => {
         console.error('Error fetching items:', error);
       }
     };
+
     fetchItems();
-  }, []);
+  }, [auth, router]);
 
   useEffect(() => {
+    if (!auth) return; // Prevent further execution if not authenticated
+
     const fetchLeaders = async () => {
       try {
         const restOperation = get({
           apiName: 'ylraffle',
           path: '/leaders',
-          httpMethod: 'GET'
+          httpMethod: 'GET',
         });
         const response = await restOperation.response;
         const reader = response.body.getReader();
@@ -82,27 +91,26 @@ const Directory = () => {
         console.error('Error fetching leaders:', error);
       }
     };
+
     fetchLeaders();
-  }, []);
+  }, [auth]);
 
   useEffect(() => {
-    const searchLeader = async () => {
-      if (auth && auth.signInDetails && auth.signInDetails.loginId) {
-        const leader = leaderData.find(element => element.Email === auth.signInDetails.loginId);
-        if (leader) {
-          setLeader(true);
-          setSchool(leader.School);
-        } else {
-          setLeader(false);
-        }
+    if (!auth || leaderData.length === 0) return; // Prevent further execution if not authenticated or no leader data
+
+    const searchLeader = () => {
+      const leader = leaderData.find(
+        (element) => element.Email === auth.signInDetails.loginId
+      );
+      if (leader) {
+        setLeader(true);
+        setSchool(leader.School);
       } else {
         setLeader(false);
       }
     };
 
-    if (leaderData.length > 0 && auth) {
-      searchLeader();
-    }
+    searchLeader();
   }, [leaderData, auth]);
 
   const handleSearchChange = (event) => {
@@ -133,7 +141,7 @@ const Directory = () => {
 
     const updatedEntry = {
       ...currentEntry,
-      Name: nameRef.current.value
+      Name: nameRef.current.value,
     };
 
     try {
@@ -194,13 +202,13 @@ const Directory = () => {
     return matchesSearchQuery && matchesSchool;
   });
 
-  if (leader === null) {
+  if (!auth || leader === null) {
     return <LoadingScreen />;
   }
 
   if (!leader) {
     return (
-      <div className='access-denied'>
+      <div className="access-denied">
         <p>Your account does not have access to this feature.</p>
       </div>
     );
@@ -208,7 +216,11 @@ const Directory = () => {
 
   return (
     <div>
-      <div className={`directory-container ${editModalVisible || deleteModalVisible ? 'blur' : ''}`}>
+      <div
+        className={`directory-container ${
+          editModalVisible || deleteModalVisible ? 'blur' : ''
+        }`}
+      >
         <div className="top-bar">
           <button className="home-button" onClick={() => handleNavigate('/')}>
             Home
@@ -252,14 +264,28 @@ const Directory = () => {
       {editModalVisible && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <span className="close" onClick={() => setEditModalVisible(false)}>&times;</span>
+            <span
+              className="close"
+              onClick={() => setEditModalVisible(false)}
+            >
+              &times;
+            </span>
             <h2>Edit Entry</h2>
             <form onSubmit={handleEditSubmit}>
               <label>
                 Name:
-                <input type="text" name="name" ref={nameRef} value={currentEntry?.Name || ''} onChange={handleNameChange} required />
+                <input
+                  type="text"
+                  name="name"
+                  ref={nameRef}
+                  value={currentEntry?.Name || ''}
+                  onChange={handleNameChange}
+                  required
+                />
               </label>
-              <button className="submit-button" type="submit">Save Changes</button>
+              <button className="submit-button" type="submit">
+                Save Changes
+              </button>
             </form>
           </div>
         </div>
@@ -267,11 +293,23 @@ const Directory = () => {
       {deleteModalVisible && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <span className="close" onClick={() => setDeleteModalVisible(false)}>&times;</span>
+            <span
+              className="close"
+              onClick={() => setDeleteModalVisible(false)}
+            >
+              &times;
+            </span>
             <h2>Delete Entry</h2>
             <p>Are you sure you want to delete this entry?</p>
-            <button className="submit-button" onClick={handleDeleteSubmit}>Yes</button>
-            <button className="submit-button" onClick={() => setDeleteModalVisible(false)}>No</button>
+            <button className="submit-button" onClick={handleDeleteSubmit}>
+              Yes
+            </button>
+            <button
+              className="submit-button"
+              onClick={() => setDeleteModalVisible(false)}
+            >
+              No
+            </button>
           </div>
         </div>
       )}

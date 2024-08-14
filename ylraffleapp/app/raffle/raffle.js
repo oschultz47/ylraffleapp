@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { get } from 'aws-amplify/api';
 import { useAuth } from '../context/AuthContext';
+import { useRouter } from 'next/navigation'; // Import the router
 import LoadingScreen from '../LoadingScreen';
 import WinnerModal from './winnerModal';
 import './raffle.css';
@@ -13,17 +14,28 @@ const Raffle = () => {
   const [winner, setWinner] = useState(null);
   const [allNames, setAllNames] = useState([]);
   const [leader, setLeader] = useState(null);
-  const [namesLoaded, setNamesLoaded] = useState(null);
+  const [namesLoaded, setNamesLoaded] = useState(false); // Default to false
   const [school, setSchool] = useState('ffffff');
   const { auth } = useAuth();
+  const router = useRouter(); // Initialize the router
+
+  // Check authentication status immediately
+  useEffect(() => {
+    if (!auth) {
+      router.push('/'); // Redirect to the homepage if the user is not authenticated
+      return;
+    }
+  }, [auth, router]);
 
   useEffect(() => {
+    if (!auth) return; // Prevent further execution if not authenticated
+
     const fetchAllNames = async () => {
       try {
         const restOperation = get({
           apiName: 'ylraffle',
           path: '/allnames',
-          httpMethod: 'GET'
+          httpMethod: 'GET',
         });
         const response = await restOperation.response;
         const reader = response.body.getReader();
@@ -37,18 +49,20 @@ const Raffle = () => {
           result += decoder.decode(value, { stream: !done });
         }
         result = JSON.parse(result);
-        console.log(result);
         setAllNames(result);
       } catch (error) {
         console.error('Error fetching all names:', error);
       }
     };
+
     fetchAllNames();
-  }, []);
+  }, [auth]);
 
   useEffect(() => {
+    if (!auth || allNames.length === 0) return; // Prevent further execution if not authenticated or no names
+
     const searchNames = async () => {
-      if (auth && auth.signInDetails && auth.signInDetails.loginId) {
+      if (auth.signInDetails && auth.signInDetails.loginId) {
         const leader = allNames.find(element => element.Email === auth.signInDetails.loginId);
         if (leader) {
           setLeader(true);
@@ -61,12 +75,12 @@ const Raffle = () => {
       }
     };
 
-    if (allNames.length > 0 && auth) {
-      searchNames();
-    }
+    searchNames();
   }, [allNames, auth]);
 
   useEffect(() => {
+    if (!auth || !school) return; // Prevent further execution if not authenticated or no school
+
     const fetchItems = async () => {
       try {
         const restOperation = get({
@@ -85,7 +99,6 @@ const Raffle = () => {
           result += decoder.decode(value, { stream: !done });
         }
         result = JSON.parse(result);
-        console.log(result);
 
         let filteredResponse = result;
         if (school !== 'Admin') {
@@ -101,10 +114,8 @@ const Raffle = () => {
       }
     };
 
-    if (school) {
-      fetchItems();
-    }
-  }, [school]);
+    fetchItems();
+  }, [school, auth]);
 
   useEffect(() => {
     setNames(tableData.map((item) => item.Name));
@@ -123,6 +134,8 @@ const Raffle = () => {
   };
 
   const resetRaffle = () => {
+    if (!auth || !school) return; // Prevent further execution if not authenticated or no school
+
     const fetchItems = async () => {
       try {
         const restOperation = get({
@@ -154,8 +167,9 @@ const Raffle = () => {
       } catch (error) {
         console.error('Error fetching items:', error);
       }
-    }
-      fetchItems();
+    };
+
+    fetchItems();
   };
 
   const calculateFontSize = (length) => {
@@ -172,7 +186,7 @@ const Raffle = () => {
     setNames(remainingNames);
   };
 
-  if (namesLoaded === null || leader === null) {
+  if (!auth || namesLoaded === null || leader === null) {
     return <LoadingScreen />;
   }
 

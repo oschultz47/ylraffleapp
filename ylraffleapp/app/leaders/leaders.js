@@ -24,44 +24,51 @@ const Leaders = () => {
   const phoneRef = useRef(null);
   const emailRef = useRef(null);
 
-  const fetchItems = async () => {
-    try {
-      const restOperation = get({
-        apiName: 'ylraffle',
-        path: '/leaders',
-        httpMethod: 'GET',
-      });
-      const response = await restOperation.response;
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder('utf-8');
-      let result = '';
-      let done = false;
-
-      while (!done) {
-        const { value, done: streamDone } = await reader.read();
-        done = streamDone;
-        result += decoder.decode(value, { stream: !done });
-      }
-      result = JSON.parse(result);
-
-      result.forEach((item) => {
-        const match = item.PhoneNumber.match(/^\+1(\d{3})(\d{3})(\d{4})$/);
-        if (match) {
-          item.PhoneNumber = `+1 (${match[1]}) ${match[2]}-${match[3]}`;
-        }
-      });
-      setTableData(result);
-    } catch (error) {
-      console.error('Error fetching items:', error);
+  useEffect(() => {
+    if (!auth) {
+      router.push('/');
+      return;
     }
-  };
 
-  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const restOperation = get({
+          apiName: 'ylraffle',
+          path: '/leaders',
+          httpMethod: 'GET',
+        });
+        const response = await restOperation.response;
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder('utf-8');
+        let result = '';
+        let done = false;
+
+        while (!done) {
+          const { value, done: streamDone } = await reader.read();
+          done = streamDone;
+          result += decoder.decode(value, { stream: !done });
+        }
+        result = JSON.parse(result);
+
+        result.forEach((item) => {
+          const match = item.PhoneNumber.match(/^\+1(\d{3})(\d{3})(\d{4})$/);
+          if (match) {
+            item.PhoneNumber = `+1 (${match[1]}) ${match[2]}-${match[3]}`;
+          }
+        });
+        setTableData(result);
+      } catch (error) {
+        console.error('Error fetching items:', error);
+      }
+    };
+
     fetchItems();
-  }, []);
+  }, [auth, router]);
 
   useEffect(() => {
-    if (auth && auth.signInDetails && auth.signInDetails.loginId && tableData.length > 0) {
+    if (!auth || tableData.length === 0) return;
+
+    if (auth.signInDetails && auth.signInDetails.loginId) {
       const user = tableData.find((element) => element.Email === auth.signInDetails.loginId);
       const isLeader = !!user;
       setLeader(isLeader);
@@ -69,7 +76,7 @@ const Leaders = () => {
       if (user && user.School === 'Admin') {
         setIsAdmin(true);
       }
-    } else if (tableData.length > 0) {
+    } else {
       setLeader(false);
     }
   }, [tableData, auth]);
@@ -115,8 +122,7 @@ const Leaders = () => {
         },
       });
 
-      const { body } = await restOperation.response;
-      const response = await body.json();
+      await restOperation.response;
 
       fetchItems();
       toggleModal();
@@ -165,14 +171,12 @@ const Leaders = () => {
 
   const handleDeleteSubmit = async () => {
     try {
-      var phone = formatPhoneNumber(currentEntry.PhoneNumber);
-      
-      const leaderpath = `/leaders/${(phone)}`
+      const phone = formatPhoneNumber(currentEntry.PhoneNumber);
+      const leaderpath = `/leaders/${phone}`;
       const restOperation = del({
         apiName: 'ylraffle',
-        path: leaderpath
+        path: leaderpath,
       });
-      console.log(leaderpath);
 
       await restOperation.response;
 
@@ -207,13 +211,13 @@ const Leaders = () => {
       item.Email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  if (leader === null) {
+  if (!auth || leader === null) {
     return <LoadingScreen />;
   }
 
   if (!leader) {
     return (
-      <div className='access-denied'>
+      <div className="access-denied">
         <p>Your account does not have access to this feature.</p>
       </div>
     );
@@ -221,7 +225,11 @@ const Leaders = () => {
 
   return (
     <div>
-      <div className={`leaders-container ${showModal || editModalVisible || deleteModalVisible ? 'blur' : ''}`}>
+      <div
+        className={`leaders-container ${
+          showModal || editModalVisible || deleteModalVisible ? 'blur' : ''
+        }`}
+      >
         <div className="top-bar">
           <button className="home-button" onClick={() => handleNavigate('/')}>
             Home
@@ -270,7 +278,9 @@ const Leaders = () => {
       {showModal && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <span className="close" onClick={toggleModal}>&times;</span>
+            <span className="close" onClick={toggleModal}>
+              &times;
+            </span>
             <h2>Add New Leader</h2>
             <form onSubmit={handleSubmit}>
               <label>
@@ -305,7 +315,9 @@ const Leaders = () => {
                 Email:
                 <input type="email" name="email" ref={emailRef} required />
               </label>
-              <button className="submit-button" type="submit">Add Leader</button>
+              <button className="submit-button" type="submit">
+                Add Leader
+              </button>
             </form>
           </div>
         </div>
@@ -313,16 +325,29 @@ const Leaders = () => {
       {editModalVisible && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <span className="close" onClick={() => setEditModalVisible(false)}>&times;</span>
+            <span className="close" onClick={() => setEditModalVisible(false)}>
+              &times;
+            </span>
             <h2>Edit Leader</h2>
             <form onSubmit={handleEditSubmit}>
               <label>
                 Name:
-                <input type="text" name="name" value={currentEntry?.Name || ''} onChange={handleNameChange} required />
+                <input
+                  type="text"
+                  name="name"
+                  value={currentEntry?.Name || ''}
+                  onChange={handleNameChange}
+                  required
+                />
               </label>
               <label>
                 Team:
-                <select name="team" value={currentEntry?.School || ''} onChange={handleSchoolChange} required>
+                <select
+                  name="team"
+                  value={currentEntry?.School || ''}
+                  onChange={handleSchoolChange}
+                  required
+                >
                   <option value="Consol">Consol</option>
                   <option value="CSHS">CSHS</option>
                   <option value="Bryan">Bryan</option>
@@ -339,15 +364,29 @@ const Leaders = () => {
               </label>
               <label>
                 Phone Number:
-                <InputMask mask="+1 (999) 999-9999" name="phone" value={currentEntry?.PhoneNumber || ''} onChange={handlePhoneChange} required>
+                <InputMask
+                  mask="+1 (999) 999-9999"
+                  name="phone"
+                  value={currentEntry?.PhoneNumber || ''}
+                  onChange={handlePhoneChange}
+                  required
+                >
                   {(inputProps) => <input {...inputProps} type="text" />}
                 </InputMask>
               </label>
               <label>
                 Email:
-                <input type="email" name="email" value={currentEntry?.Email || ''} onChange={handleEmailChange} required />
+                <input
+                  type="email"
+                  name="email"
+                  value={currentEntry?.Email || ''}
+                  onChange={handleEmailChange}
+                  required
+                />
               </label>
-              <button className="submit-button" type="submit">Save Changes</button>
+              <button className="submit-button" type="submit">
+                Save Changes
+              </button>
             </form>
           </div>
         </div>
@@ -355,11 +394,23 @@ const Leaders = () => {
       {deleteModalVisible && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <span className="close" onClick={() => setDeleteModalVisible(false)}>&times;</span>
+            <span
+              className="close"
+              onClick={() => setDeleteModalVisible(false)}
+            >
+              &times;
+            </span>
             <h2>Delete Leader</h2>
             <p>Are you sure you want to delete this entry?</p>
-            <button className="submit-button" onClick={handleDeleteSubmit}>Yes</button>
-            <button className="submit-button" onClick={() => setDeleteModalVisible(false)}>No</button>
+            <button className="submit-button" onClick={handleDeleteSubmit}>
+              Yes
+            </button>
+            <button
+              className="submit-button"
+              onClick={() => setDeleteModalVisible(false)}
+            >
+              No
+            </button>
           </div>
         </div>
       )}
