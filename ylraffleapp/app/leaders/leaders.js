@@ -24,43 +24,46 @@ const Leaders = () => {
   const phoneRef = useRef(null);
   const emailRef = useRef(null);
 
+  // Fetch the leaders data from the API
+  const fetchItems = async () => {
+    try {
+      const restOperation = get({
+        apiName: 'ylraffle',
+        path: '/leaders',
+        httpMethod: 'GET',
+      });
+      const response = await restOperation.response;
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder('utf-8');
+      let result = '';
+      let done = false;
+
+      while (!done) {
+        const { value, done: streamDone } = await reader.read();
+        done = streamDone;
+        result += decoder.decode(value, { stream: !done });
+      }
+      result = JSON.parse(result);
+
+      // Format the phone number
+      result.forEach((item) => {
+        const match = item.PhoneNumber.match(/^\+1(\d{3})(\d{3})(\d{4})$/);
+        if (match) {
+          item.PhoneNumber = `+1 (${match[1]}) ${match[2]}-${match[3]}`;
+        }
+      });
+
+      setTableData(result);
+    } catch (error) {
+      console.error('Error fetching items:', error);
+    }
+  };
+
   useEffect(() => {
     if (!auth) {
       router.push('/');
       return;
     }
-
-    const fetchItems = async () => {
-      try {
-        const restOperation = get({
-          apiName: 'ylraffle',
-          path: '/leaders',
-          httpMethod: 'GET',
-        });
-        const response = await restOperation.response;
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder('utf-8');
-        let result = '';
-        let done = false;
-
-        while (!done) {
-          const { value, done: streamDone } = await reader.read();
-          done = streamDone;
-          result += decoder.decode(value, { stream: !done });
-        }
-        result = JSON.parse(result);
-
-        result.forEach((item) => {
-          const match = item.PhoneNumber.match(/^\+1(\d{3})(\d{3})(\d{4})$/);
-          if (match) {
-            item.PhoneNumber = `+1 (${match[1]}) ${match[2]}-${match[3]}`;
-          }
-        });
-        setTableData(result);
-      } catch (error) {
-        console.error('Error fetching items:', error);
-      }
-    };
 
     fetchItems();
   }, [auth, router]);
@@ -124,7 +127,7 @@ const Leaders = () => {
 
       await restOperation.response;
 
-      fetchItems();
+      fetchItems(); // Fetch the updated list after adding a new leader
       toggleModal();
     } catch (error) {
       console.log('POST call failed: ', error);
@@ -157,7 +160,7 @@ const Leaders = () => {
 
       await restOperation.response;
 
-      fetchItems();
+      fetchItems(); // Fetch the updated list after editing a leader
       setEditModalVisible(false);
     } catch (error) {
       console.log('PUT call failed: ', error);
@@ -180,7 +183,7 @@ const Leaders = () => {
 
       await restOperation.response;
 
-      fetchItems();
+      fetchItems(); // Fetch the updated list after deleting a leader
       setDeleteModalVisible(false);
     } catch (error) {
       console.log('DELETE call failed: ', error);
