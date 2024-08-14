@@ -11,12 +11,18 @@ html, body {
   overflow-y: auto; /* Allow vertical scrolling */
 }
 
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure body takes full height */
+}
+
 .leaders-container {
+  flex: 1; /* Allow leaders-container to grow and fill the remaining space */
   width: 100%;
   margin: 0 auto;
   padding: 20px;
   min-height: 100vh; /* Ensure the container takes at least the full height of the viewport */
-  overflow-y: auto; /* Allow vertical scrolling */
 }
 
 .blur {
@@ -170,6 +176,8 @@ html, body {
   margin: auto;
   z-index: 1001;
   position: relative;
+  max-height: 90vh; /* Ensure the modal content does not exceed the viewport height */
+  overflow-y: auto; /* Allow scrolling within the modal content */
 }
 
 .close {
