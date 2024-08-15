@@ -76,7 +76,7 @@
 }
 
 .leaders-table td.actions {
-  text-align: center;
+  text-align: center; /* Default alignment for non-mobile screens */
 }
 
 .access-denied {
@@ -113,8 +113,10 @@
     font-size: 14px;
     border-bottom: 1px solid #ddd;
     position: relative;
-    padding-left: 50%;
-    white-space: nowrap;
+    white-space: normal; /* Allow text to wrap */
+    overflow-wrap: break-word; /* Break long words if necessary */
+    word-break: break-word; /* Ensure long words break in a clean way */
+    hyphens: auto; /* Add hyphenation to break long words more gracefully */
   }
 
   .leaders-table td:last-child {
@@ -127,9 +129,20 @@
     left: 10px;
     width: 45%;
     padding-right: 10px;
-    white-space: nowrap;
     text-align: left;
     font-weight: bold;
+  }
+
+  /* Right-align edit and delete buttons only on mobile */
+  .leaders-table td.actions {
+    text-align: right; /* Right-align the buttons only on mobile */
+    padding-right: 10px; /* Add padding to the right for spacing */
+  }
+
+  .leaders-table td.actions button {
+    margin-left: 5px; /* Space between buttons */
+    display: inline-block; /* Keep buttons inline */
+    vertical-align: middle; /* Center buttons vertically */
   }
 }
 

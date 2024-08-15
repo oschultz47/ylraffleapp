@@ -269,8 +269,10 @@ const Leaders = () => {
                 <td data-label="Email">{item.Email}</td>
                 {isAdmin && (
                   <td data-label="Actions" className="actions">
-                    <button onClick={() => handleEditClick(item)}>Edit</button>
-                    <button onClick={() => handleDeleteClick(item)}>Delete</button>
+                    <div className='edit-buttons'>
+                      <button onClick={() => handleEditClick(item)}>Edit</button>
+                      <button onClick={() => handleDeleteClick(item)}>Delete</button>
+                    </div>
                   </td>
                 )}
               </tr>
