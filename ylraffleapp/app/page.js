@@ -31,9 +31,9 @@ function Home() {
   }
 
   return (
-    <div className="app-container">
+    <div className="app-home-container">
       <ButtonAppBar />
-      <div className="home-container">
+      <div className="picture-container">
         <div className="text-box">
           <h1 className="welcome-text">Welcome to BVYL Raffle!</h1>
         </div>

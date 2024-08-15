@@ -1,22 +1,3 @@
-/* Apply border-box globally for consistent sizing */
-* {
-  box-sizing: border-box;
-}
-
-/* Ensure the body and HTML elements can scroll */
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  overflow-y: auto; /* Allow vertical scrolling */
-}
-
-body {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh; /* Ensure body takes full height */
-}
-
 .leaders-container {
   flex: 1; /* Allow leaders-container to grow and fill the remaining space */
   width: 100%;

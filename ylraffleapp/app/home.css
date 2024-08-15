@@ -1,37 +1,42 @@
-html, body {
-    height: 100%;
-    margin: 0;
-    overflow: hidden;
-  }
-  
-  .app-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
-  
-  .home-container {
-    background-image: url('./campPhoto.JPG');
-    background-size: cover;
-    background-position: center;
-    flex: 8; /* Ensures this section takes up all remaining space */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white; /* Ensure the text is visible over the background */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Add some shadow to make text stand out */
-  }
-  
-  .welcome-text {
-    font-size: 96px; /* Adjust size as needed */
-    font-weight: bold;
-    text-align: center;
-    margin: 0;
-  }
-  
-  .text-box {
-    background-color: rgba(0, 0, 0, 0.5); /* Slightly transparent gray box */
-    padding: 20px; /* Add padding around the text */
-    border-radius: 10px; /* Optional: Add rounded corners */
-  }
-  
+body, html {
+  margin: 0;
+  padding: 0;
+}
+
+.app-home-container {
+  display: flex;
+  flex-direction: column;
+  height: 99vh; /* Set height to 100% of the viewport height */
+  overflow: hidden; /* Prevent scrolling within the app container */
+  margin: 0; /* Remove any margin */
+  padding: 0; /* Remove any padding */
+  outline: 1;
+  box-sizing: border-box;
+}
+
+.picture-container {
+  background-image: url('./campPhoto.JPG');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  margin: 0; /* Remove any margin */
+  padding: 0; /* Remove any padding */
+  width: 100%; /* Ensure it covers the full width */
+  height: 100%; /* Fill the remaining height */
+}
+
+.welcome-text {
+  font-size: 96px; /* Adjust size as needed */
+  font-weight: bold;
+  text-align: center;
+  margin: 0;
+}
+
+.text-box {
+  background-color: rgba(0, 0, 0, 0.5); /* Slightly transparent gray box */
+  padding: 20px; /* Add padding around the text */
+  border-radius: 10px; /* Optional: Add rounded corners */
+}

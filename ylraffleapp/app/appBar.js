@@ -40,21 +40,21 @@ export default function ButtonAppBar() {
   };
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ overflow: 'hidden' }}>
       <ThemeProvider theme={theme}>
         <AppBar position="fixed">
           <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: 'left' }}>
+            <Typography variant="h6" component="div" sx={{ textAlign: 'left', flexGrow: 1 }}>
               BVYL Raffle
             </Typography>
             {isMobile ? (
               <>
                 <IconButton
                   size="large"
-                  edge="start"
+                  edge="end" /* Change edge to 'end' */
                   color="inherit"
                   aria-label="menu"
-                  sx={{ mr: 2 }}
+                  sx={{ ml: 'auto' }} /* Added marginLeft 'auto' to push to the right */
                   onClick={handleMenuOpen}
                 >
                   <MenuIcon />
@@ -72,7 +72,7 @@ export default function ButtonAppBar() {
                 </Menu>
               </>
             ) : (
-              <Box sx={{ display: 'flex', gap: 2 }}>
+              <Box sx={{ display: 'flex', gap: 2, marginLeft: 'auto' }}>
                 <Button color="inherit" onClick={() => handleNavigation('/raffle')}>Raffle</Button>
                 <Button color="inherit" onClick={() => handleNavigation('/directory')}>Kids</Button>
                 <Button color="inherit" onClick={() => handleNavigation('/leaders')}>Leaders</Button>

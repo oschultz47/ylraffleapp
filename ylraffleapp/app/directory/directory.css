@@ -1,21 +1,3 @@
-/* Apply border-box globally for consistent sizing */
-* {
-  box-sizing: border-box;
-}
-
-/* Ensure the body allows scrolling */
-body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh; /* Ensure the body takes at least the full height of the viewport */
-  overflow-y: auto; /* Allow vertical scrolling */
-}
-
-html {
-  height: 100%;
-  overflow-y: auto; /* Ensure scrolling if content overflows the viewport */
-}
-
 .directory-container {
   width: 100%;
   margin: 0 auto;
