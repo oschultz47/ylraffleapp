@@ -1,10 +1,71 @@
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.home-button {
+  position: absolute;
+  left: 20px;
+  background-color: gray;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 20px;
+  cursor: pointer;
+  border-radius: 0px;
+}
+
+.home-button:hover {
+  background-color: gray;
+}
+
 .club-statistics-container {
-    width: 80%;
-    margin: 0 auto;
-  }
-  
-  .club-statistics-container h2 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
+  position: relative;
+  padding-top: 20px;
+}
+
+.chart-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 600px;
+}
+
+.club-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.club-data-table th,
+.club-data-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+.club-data-table th {
+  background-color: #f4f4f4;
+}
+
+.club-data-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.club-data-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+.table-container {
+  overflow-x: auto; /* Ensures the table is scrollable on smaller screens */
+}
+.school-filter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 20px;
+}

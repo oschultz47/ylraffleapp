@@ -67,6 +67,7 @@ export default function ButtonAppBar() {
                   <MenuItem onClick={() => handleNavigation('/raffle')}>Raffle</MenuItem>
                   <MenuItem onClick={() => handleNavigation('/directory')}>Kids</MenuItem>
                   <MenuItem onClick={() => handleNavigation('/leaders')}>Leaders</MenuItem>
+                  <MenuItem onClick={() => handleNavigation('/clubstats')}>Stats</MenuItem>
                   <MenuItem onClick={() => signOut()}>Log Out</MenuItem>
                 </Menu>
               </>
@@ -75,6 +76,7 @@ export default function ButtonAppBar() {
                 <Button color="inherit" onClick={() => handleNavigation('/raffle')}>Raffle</Button>
                 <Button color="inherit" onClick={() => handleNavigation('/directory')}>Kids</Button>
                 <Button color="inherit" onClick={() => handleNavigation('/leaders')}>Leaders</Button>
+                <Button color="inherit" onClick={() => handleNavigation('/clubstats')}>Stats</Button>
                 <Button color="inherit" onClick={() => signOut()}>Log Out</Button>
               </Box>
             )}
