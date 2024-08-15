@@ -82,6 +82,26 @@
 }
 
 @media (max-width: 600px) {
+  .header-container {
+    flex-direction: column;
+    align-items: center; /* Keep the title centered */
+    margin-bottom: 10px;
+  }
+
+  .club-home-button {
+    position: static; /* Removes absolute positioning */
+    width: 90vw; /* Allows the button to size dynamically */
+    align-items: center;
+    margin-bottom: 10px; /* Adds some space below the button */
+    font-size: 18px; /* Adjust font size for smaller screens */
+    padding: 8px 16px; /* Adjust padding for smaller screens */
+  }
+
+  .school-filter select {
+    max-width: 100%; /* Allows select box to take up the full width */
+    width: 100%;
+  }
+
   .chart-container {
     height: auto; /* Allow the chart to resize on smaller screens */
     margin-top: 10px;
