@@ -35,7 +35,7 @@ const ClubStats = () => {
   const [leaderData, setLeaderData] = useState([]);
   const [leader, setLeader] = useState(null);
   const [school, setSchool] = useState('');
-  const [selectedSchool, setSelectedSchool] = useState('');
+  const [selectedSchool, setSelectedSchool] = useState('empty');
   const { auth } = useAuth();
   const router = useRouter(); // Initialize useNavigate for navigation
 
@@ -64,6 +64,9 @@ const ClubStats = () => {
         setClubData(result);
         if (school !== 'Admin') {
           setSelectedSchool(school); // Automatically set the school for non-admin users
+        }
+        else{
+          setSelectedSchool('');
         }
       } catch (error) {
         console.error('Error fetching clubs:', error);
@@ -225,7 +228,7 @@ const ClubStats = () => {
     }
   };
 
-  if (leader === null) {
+  if (selectedSchool === 'empty') {
     return <LoadingScreen />;
   }
 
