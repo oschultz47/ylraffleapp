@@ -6,10 +6,10 @@
   margin-bottom: 20px;
 }
 
-.home-button {
+.club-home-button {
   position: absolute;
   left: 20px;
-  background-color: gray;
+  background-color: grey;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -18,8 +18,8 @@
   border-radius: 0px;
 }
 
-.home-button:hover {
-  background-color: gray;
+.club-home-button:hover {
+  opacity: 0.8;
 }
 
 .club-statistics-container {
@@ -68,4 +68,9 @@
   justify-content: center;
   position: relative;
   margin-bottom: 20px;
+}
+
+.school-filter select {
+  max-width: 200px; /* Set a max-width that suits your design */
+  width: 100%; /* Allows it to be responsive within its container */
 }

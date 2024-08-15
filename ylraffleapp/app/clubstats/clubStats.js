@@ -235,7 +235,7 @@ const ClubStats = () => {
   return (
     <div className="club-statistics-container">
       <div className="header-container">
-        <button className="home-button" onClick={() => router.push('/')}>Home</button>
+        <button className="club-home-button" onClick={() => router.push('/')}>Home</button>
         <h2>Club Statistics {school !== 'Admin' && `for ${school}`}</h2>
       </div>
       {school === 'Admin' && (
