@@ -172,10 +172,6 @@ const Raffle = () => {
     fetchItems();
   };
 
-  const calculateFontSize = (length) => {
-    return Math.max(10, 50 - length); // Ensure a minimum font size of 10px
-  };
-
   const eliminateHalf = () => {
     const remainingNames = [...names];
     const half = Math.floor(remainingNames.length / 2);
@@ -184,6 +180,21 @@ const Raffle = () => {
       remainingNames.splice(randomIndex, 1);
     }
     setNames(remainingNames);
+  };
+
+  const calculateFontSize = (nameCount) => {
+    if (nameCount <= 5){
+      return '5vw';
+    } else if (nameCount <= 12) {
+      return '3.5vw';
+    } else if (nameCount <= 24) {
+      return '3vw';
+    } else if (nameCount <= 48){
+      return '2vw';
+    }
+    else{
+      return '1vw';
+    }
   };
 
   if (!auth || namesLoaded === null || leader === null) {
@@ -203,7 +214,11 @@ const Raffle = () => {
       {winner && <WinnerModal winner={winner} onClose={handleCloseModal} />}
       <div id="names" className="names-grid">
         {names.map((name, index) => (
-          <div key={index} className="name" style={{ fontSize: `${calculateFontSize(names.length)}px` }}>
+          <div
+            key={index}
+            className="name"
+            style={{ fontSize: calculateFontSize(names.length) }}
+          >
             {name}
           </div>
         ))}

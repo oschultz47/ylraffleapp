@@ -1,23 +1,39 @@
 .raffle-container {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
 .names-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 10px;
-  justify-items: center;
-  align-items: center;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Adjust the minimum width of grid items */
+  grid-auto-rows: calc((100vw / 16) * 9 / auto-fit); /* Maintain the 16:9 aspect ratio for each row */
+  gap: 5px; /* Maintain a 5px gap between items */
+  justify-content: center; /* Center the grid items horizontally */
+  align-content: center; /* Center the grid items vertically */
   margin: 20px 0;
+  width: 90%;  /* Adjust the grid to take up 90% of the width */
+  max-width: 1920px; /* Ensure the grid doesn't exceed 1920px in width */
+  height: 90%; /* Adjust the grid to take up 90% of the height */
+  max-height: 1080px; /* Ensure the grid doesn't exceed 1080px in height */
+  overflow-y: auto; /* Add vertical scrolling if needed */
 }
 
 .name {
-  padding: 10px;
   background-color: #f0f0f0;
   border: 1px solid #ccc;
   border-radius: 4px;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   word-wrap: break-word;
+  padding: 2px;
+  font-weight: bold;
+  line-height: 1;
 }
 
 .eliminate-button {
