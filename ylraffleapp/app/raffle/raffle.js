@@ -184,16 +184,16 @@ const Raffle = () => {
 
   const calculateFontSize = (nameCount) => {
     if (nameCount <= 5){
-      return '5vw';
-    } else if (nameCount <= 12) {
-      return '3.5vw';
+      return '4vw';
     } else if (nameCount <= 24) {
       return '3vw';
-    } else if (nameCount <= 48){
+    } else if (nameCount <=48){
+      return '2.5vw';
+    }else if (nameCount <=64){
       return '2vw';
     }
     else{
-      return '1vw';
+      return '1.25vw';
     }
   };
 
