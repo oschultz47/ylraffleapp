@@ -79,8 +79,6 @@ const Raffle = () => {
   }, [allNames, auth]);
 
   useEffect(() => {
-    if (!auth || !school) return; // Prevent further execution if not authenticated or no school
-
     const fetchItems = async () => {
       try {
         const restOperation = get({
@@ -92,34 +90,38 @@ const Raffle = () => {
         const decoder = new TextDecoder('utf-8');
         let result = '';
         let done = false;
-
+  
         while (!done) {
           const { value, done: streamDone } = await reader.read();
           done = streamDone;
           result += decoder.decode(value, { stream: !done });
         }
         result = JSON.parse(result);
-
-        // Filter out entries where Joke is true
-        let filteredResponse = result.filter(item => !item.Joke);
-
-        filteredResponse = result.filter(item => !(item.Name == ''));
-        
+  
+        // Filter out entries where Joke is true or Name is empty
+        let filteredResponse = result.filter(item => !item.Joke && item.Name !== '');
+  
         if (school !== 'Admin') {
           filteredResponse = filteredResponse.filter(item => item.School === school);
         }
-
+  
+        // Format timestamps and update state
         filteredResponse.forEach((item) => {
           item.Timestamp = new Date(item.Timestamp).toLocaleString();
         });
+  
         setTableData(filteredResponse);
+        setNames(filteredResponse.map(item => item.Name));
       } catch (error) {
         console.error('Error fetching items:', error);
       }
     };
-
-    fetchItems();
+  
+    const interval = setInterval(fetchItems, 5000); // Poll every 5 seconds
+  
+    return () => clearInterval(interval); // Cleanup on unmount
   }, [school, auth]);
+  
 
   useEffect(() => {
     setNames(tableData.map((item) => item.Name));
