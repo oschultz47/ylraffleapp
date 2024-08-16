@@ -100,9 +100,13 @@ const Raffle = () => {
         }
         result = JSON.parse(result);
 
-        let filteredResponse = result;
+        // Filter out entries where Joke is true
+        let filteredResponse = result.filter(item => !item.Joke);
+
+        filteredResponse = result.filter(item => !(item.Name == ''));
+        
         if (school !== 'Admin') {
-          filteredResponse = result.filter(item => item.School === school);
+          filteredResponse = filteredResponse.filter(item => item.School === school);
         }
 
         filteredResponse.forEach((item) => {
@@ -155,9 +159,11 @@ const Raffle = () => {
         }
         result = JSON.parse(result);
 
-        let filteredResponse = result;
+        // Filter out entries where Joke is true
+        let filteredResponse = result.filter(item => !item.Joke);
+
         if (school !== 'Admin') {
-          filteredResponse = result.filter(item => item.School === school);
+          filteredResponse = filteredResponse.filter(item => item.School === school);
         }
 
         filteredResponse.forEach((item) => {

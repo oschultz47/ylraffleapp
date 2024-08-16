@@ -20,6 +20,7 @@ const Directory = () => {
   const router = useRouter();
 
   const nameRef = useRef(null);
+  const jokeRef = useRef(null);
 
   useEffect(() => {
     // Check if user is authenticated, if not, redirect to home
@@ -142,6 +143,7 @@ const Directory = () => {
     const updatedEntry = {
       ...currentEntry,
       Name: nameRef.current.value,
+      Joke: jokeRef.current.value === 'Yes',
     };
 
     try {
@@ -150,7 +152,7 @@ const Directory = () => {
         apiName: 'ylraffle',
         path: `/kids/${phone}`,
         options: {
-          body: updatedEntry.Name,
+          body: updatedEntry,
         },
       });
 
@@ -188,6 +190,10 @@ const Directory = () => {
 
   const handleNameChange = (e) => {
     setCurrentEntry({ ...currentEntry, Name: e.target.value });
+  };
+
+  const handleJokeChange = (e) => {
+    setCurrentEntry({ ...currentEntry, Joke: e.target.value === 'Yes' });
   };
 
   const filteredData = tableData.filter((item) => {
@@ -240,6 +246,7 @@ const Directory = () => {
               <th>School</th>
               <th>Phone Number</th>
               <th>Last at Club</th>
+              <th>Flagged as Joke</th>
               {leader && <th>Actions</th>}
             </tr>
           </thead>
@@ -250,6 +257,7 @@ const Directory = () => {
                 <td data-label="School">{item.School}</td>
                 <td data-label="Phone Number">{item.PhoneNumber}</td>
                 <td data-label="Last at Club">{item.Timestamp}</td>
+                <td data-label="Joke">{item.Joke ? "Yes" : "No" }</td>
                 {leader && (
                   <td data-label="Actions" className="actions">
                     <button onClick={() => handleEditClick(item)}>Edit</button>
@@ -282,6 +290,19 @@ const Directory = () => {
                   onChange={handleNameChange}
                   required
                 />
+              </label>
+              <label>
+                Flagged as Joke:
+                <select
+                  name="joke"
+                  ref={jokeRef}
+                  value={currentEntry?.Joke ? 'Yes' : 'No'}
+                  onChange={handleJokeChange}
+                  required
+                >
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
               </label>
               <button className="submit-button" type="submit">
                 Save Changes
