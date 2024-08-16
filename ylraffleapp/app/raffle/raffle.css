@@ -67,6 +67,25 @@
   max-width: 500px;
 }
 
+.school-filter {
+  position: absolute;
+  bottom: 20px; /* Adjust the distance from the bottom */
+  left: 20px; /* Adjust the distance from the left */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.school-filter label {
+  margin-right: 10px; /* Space between label and dropdown */
+}
+
+.school-filter select {
+  padding: 5px;
+  font-size: 16px;
+}
+
+
 @keyframes popIn {
   0% {
     transform: scale(0.5);

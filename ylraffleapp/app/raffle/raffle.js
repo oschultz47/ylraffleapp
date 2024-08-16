@@ -16,6 +16,7 @@ const Raffle = () => {
   const [leader, setLeader] = useState(null);
   const [namesLoaded, setNamesLoaded] = useState(false); // Default to false
   const [school, setSchool] = useState('ffffff');
+  const [selectedSchool, setSelectedSchool] = useState(''); // For filtering names
   const { auth } = useAuth();
   const router = useRouter(); // Initialize the router
   const intervalRef = useRef(null); // Use useRef to store the interval ID
@@ -103,7 +104,10 @@ const Raffle = () => {
         // Filter out entries where Joke is true or Name is empty
         let filteredResponse = result.filter(item => !item.Joke && item.Name !== '');
   
-        if (school !== 'Admin') {
+        // Filter by selected school if Admin has chosen a school
+        if (school === 'Admin' && selectedSchool !== '') {
+          filteredResponse = filteredResponse.filter(item => item.School === selectedSchool);
+        } else if (school !== 'Admin') {
           filteredResponse = filteredResponse.filter(item => item.School === school);
         }
   
@@ -124,7 +128,7 @@ const Raffle = () => {
     intervalRef.current = setInterval(fetchItems, 1000); // Poll every second
   
     return () => clearInterval(intervalRef.current); // Cleanup on unmount
-  }, [school, auth]);
+  }, [school, auth, selectedSchool]);
   
 
   useEffect(() => {
@@ -168,7 +172,9 @@ const Raffle = () => {
         // Filter out entries where Joke is true
         let filteredResponse = result.filter(item => !item.Joke);
 
-        if (school !== 'Admin') {
+        if (school === 'Admin' && selectedSchool !== '') {
+          filteredResponse = filteredResponse.filter(item => item.School === selectedSchool);
+        } else if (school !== 'Admin') {
           filteredResponse = filteredResponse.filter(item => item.School === school);
         }
 
@@ -212,6 +218,10 @@ const Raffle = () => {
     }
   };
 
+  const handleSchoolChange = (event) => {
+    setSelectedSchool(event.target.value);
+  };
+
   if (!auth || namesLoaded === null || leader === null) {
     return <LoadingScreen />;
   }
@@ -245,6 +255,25 @@ const Raffle = () => {
       >
         Eliminate Half
       </button>
+      {school === 'Admin' && (
+        <div className="school-filter">
+          <label htmlFor="school-select">Filter by School: </label>
+          <select
+            id="school-select"
+            value={selectedSchool}
+            onChange={handleSchoolChange}
+          >
+            <option value="">All Schools</option>
+            {Array.from(new Set(allNames.map(name => name.School)))
+            .filter(schoolName => schoolName !== 'Admin') // Exclude 'Admin'
+            .map(schoolName => (
+              <option key={schoolName} value={schoolName}>
+                {schoolName}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
     </div>
   );
 };
