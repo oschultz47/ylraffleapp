@@ -82,6 +82,10 @@
   width: 100%; /* Allows it to be responsive within its container */
 }
 
+.no-data-message{
+  text-align: center;
+}
+
 @media (max-width: 600px) {
   .header-container {
     flex-direction: column;

@@ -36,7 +36,6 @@ const ClubStats = () => {
   const [leader, setLeader] = useState(null);
   const [school, setSchool] = useState('');
   const [selectedSchool, setSelectedSchool] = useState('empty');
-  const [isLoading, setIsLoading] = useState(true);
   const { auth } = useAuth();
   const router = useRouter();
 
@@ -134,11 +133,8 @@ const ClubStats = () => {
       
         
         setClubData(filteredData);
-        setIsLoading(false); // Set loading to false after setting filtered data
-
       } catch (error) {
         console.error('Error fetching clubs:', error);
-        setIsLoading(false); // Ensure loading is turned off even in case of an error
       }
     };
 
@@ -147,8 +143,12 @@ const ClubStats = () => {
 
   const handleSchoolChange = (event) => {
     setSelectedSchool(event.target.value);
-    setIsLoading(true); // Trigger loading again when school changes
   };
+
+  const filteredClubData = selectedSchool && selectedSchool !== ""
+  ? clubData.filter(item => item.School === selectedSchool)
+  : clubData;
+
 
   // Parse the date string as a local date
   const parseDateAsLocal = (dateString) => {
@@ -160,41 +160,46 @@ const ClubStats = () => {
   const schoolOptions = Array.from(new Set(clubData.map(item => item.School)));
 
   // Create datasets for each school if no specific school is selected
-  const datasets = selectedSchool
-    ? [
-        {
-          label: selectedSchool,
-          data: clubData.map(item => ({
+  const datasets = selectedSchool && selectedSchool !== ""
+  ? [
+      {
+        label: selectedSchool,
+        data: clubData
+          .filter(item => item.School === selectedSchool)
+          .map(item => ({
             x: parseDateAsLocal(item.Date),
             y: item.NumStudents,
           })),
-          fill: false,
-          backgroundColor: 'rgb(75, 192, 192)',
-          borderColor: 'rgba(75, 192, 192, 0.2)',
-          tension: 0.1,
-        },
-      ]
-    : schoolOptions.map((schoolName, index) => {
-        const schoolColor = `hsl(${index * 360 / schoolOptions.length}, 70%, 50%)`;
-        const schoolData = clubData.filter(item => item.School === schoolName);
+        fill: false,
+        backgroundColor: 'rgb(75, 192, 192)',
+        borderColor: 'rgba(75, 192, 192, 0.2)',
+        tension: 0.1,
+      },
+    ]
+  : schoolOptions.map((schoolName, index) => {
+      const schoolColor = `hsl(${index * 360 / schoolOptions.length}, 70%, 50%)`;
+      const schoolData = clubData.filter(item => item.School === schoolName);
 
-        return {
-          label: schoolName,
-          data: schoolData.map(item => ({
-            x: parseDateAsLocal(item.Date),
-            y: item.NumStudents,
-          })),
-          fill: false,
-          backgroundColor: schoolColor,
-          borderColor: schoolColor,
-          tension: 0.1,
-        };
-      });
+      return {
+        label: schoolName,
+        data: schoolData.map(item => ({
+          x: parseDateAsLocal(item.Date),
+          y: item.NumStudents,
+        })),
+        fill: false,
+        backgroundColor: schoolColor,
+        borderColor: schoolColor,
+        tension: 0.1,
+      };
+    });
 
-  const data = {
-    labels: clubData.map(item => parseDateAsLocal(item.Date)),
-    datasets: datasets,
-  };
+const data = {
+  labels: clubData
+    .filter(item => selectedSchool === "" || item.School === selectedSchool)
+    .map(item => parseDateAsLocal(item.Date)),
+  datasets: datasets,
+};
+
 
   const options = {
     scales: {
@@ -243,7 +248,7 @@ const ClubStats = () => {
     }
   };
 
-  if (isLoading || selectedSchool === 'empty' || clubData.length == 0) {
+  if ( selectedSchool === 'empty' || clubData.length == 0) {
     return <LoadingScreen />;
   }
 
@@ -284,7 +289,7 @@ const ClubStats = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {clubData.map((item, index) => (
+                  {filteredClubData.map((item, index) => (
                     <tr key={index}>
                       <td>{parseDateAsLocal(item.Date).toLocaleDateString()}</td>
                       <td>{item.School}</td>
@@ -305,7 +310,7 @@ const ClubStats = () => {
         <button className="club-home-button" onClick={() => router.push('/')}>Home</button>
         <h2>Club Statistics {school !== 'Admin' && `for ${school}`}</h2>
       </div>
-      <div>
+      <div className="no-data-message">
       <p>No data available for this club</p>
      </div>
       </div>
