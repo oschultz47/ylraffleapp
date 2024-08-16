@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { get } from 'aws-amplify/api';
 import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation'; // Import the router
@@ -18,6 +18,8 @@ const Raffle = () => {
   const [school, setSchool] = useState('ffffff');
   const { auth } = useAuth();
   const router = useRouter(); // Initialize the router
+  const intervalRef = useRef(null); // Use useRef to store the interval ID
+
 
   // Check authentication status immediately
   useEffect(() => {
@@ -116,10 +118,12 @@ const Raffle = () => {
         console.error('Error fetching items:', error);
       }
     };
+
+    fetchItems();
   
-    const interval = setInterval(fetchItems, 5000); // Poll every 5 seconds
+    intervalRef.current = setInterval(fetchItems, 1000); // Poll every second
   
-    return () => clearInterval(interval); // Cleanup on unmount
+    return () => clearInterval(intervalRef.current); // Cleanup on unmount
   }, [school, auth]);
   
 
@@ -178,9 +182,12 @@ const Raffle = () => {
     };
 
     fetchItems();
+
+    intervalRef.current = setInterval(fetchItems, 1000);
   };
 
   const eliminateHalf = () => {
+    clearInterval(intervalRef.current);
     const remainingNames = [...names];
     const half = Math.floor(remainingNames.length / 2);
     for (let i = 0; i < half; i++) {
