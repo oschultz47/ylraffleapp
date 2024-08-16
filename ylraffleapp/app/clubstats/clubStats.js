@@ -81,6 +81,9 @@ const ClubStats = () => {
       if (leader) {
         setLeader(true);
         setSchool(leader.School);
+        if (school !== 'Admin') {
+          setSelectedSchool(school); // Automatically set the school for non-admin users
+        }
       } else {
         setLeader(false);
       }
@@ -91,6 +94,7 @@ const ClubStats = () => {
 
   useEffect(() => {
     if (!auth) return;
+    if (!school) return;
 
     const fetchAndFilterClubs = async () => {
       try {
@@ -114,9 +118,8 @@ const ClubStats = () => {
 
         // Filter the data before setting the state
         let filteredData = result;
-        if (school !== 'Admin') {
+        if (school !== "Admin"){
           filteredData = result.filter(item => item.School === school);
-          setSelectedSchool(school); // Automatically set the school for non-admin users
         }
 
         if (filteredData.length === 0) {
@@ -244,7 +247,58 @@ const ClubStats = () => {
     return <LoadingScreen />;
   }
 
-  if (clubData.length > 0 && clubData[0].NumStudents === 0){
+  if (clubData[0].NumStudents !== 0){
+    return (
+      <div className="club-statistics-container">
+        <div className="header-container">
+          <button className="club-home-button" onClick={() => router.push('/')}>Home</button>
+          <h2>Club Statistics {school !== 'Admin' && `for ${school}`}</h2>
+        </div>
+        {school === 'Admin' && (
+          <div className="school-filter">
+            <label htmlFor="school-select">Filter by School: </label>
+            <select
+              id="school-select"
+              value={selectedSchool}
+              onChange={handleSchoolChange}
+            >
+              <option value="">All Schools</option>
+              {schoolOptions.map(schoolName => (
+                <option key={schoolName} value={schoolName}>
+                  {schoolName}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+            <div className="chart-container">
+              <Line data={data} options={options} />
+            </div>
+            <div className="table-container">
+              <table className="club-data-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>School</th>
+                    <th>Number of Students</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {clubData.map((item, index) => (
+                    <tr key={index}>
+                      <td>{parseDateAsLocal(item.Date).toLocaleDateString()}</td>
+                      <td>{item.School}</td>
+                      <td>{item.NumStudents}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+      </div>
+    );
+  }
+
+  else if (clubData[0].NumStudents === 0){
     return(
       <div className="club-statistics-container">
       <div className="header-container">
@@ -257,55 +311,6 @@ const ClubStats = () => {
       </div>
     )
   }
-
-  return (
-    <div className="club-statistics-container">
-      <div className="header-container">
-        <button className="club-home-button" onClick={() => router.push('/')}>Home</button>
-        <h2>Club Statistics {school !== 'Admin' && `for ${school}`}</h2>
-      </div>
-      {school === 'Admin' && (
-        <div className="school-filter">
-          <label htmlFor="school-select">Filter by School: </label>
-          <select
-            id="school-select"
-            value={selectedSchool}
-            onChange={handleSchoolChange}
-          >
-            <option value="">All Schools</option>
-            {schoolOptions.map(schoolName => (
-              <option key={schoolName} value={schoolName}>
-                {schoolName}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
-          <div className="chart-container">
-            <Line data={data} options={options} />
-          </div>
-          <div className="table-container">
-            <table className="club-data-table">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>School</th>
-                  <th>Number of Students</th>
-                </tr>
-              </thead>
-              <tbody>
-                {clubData.map((item, index) => (
-                  <tr key={index}>
-                    <td>{parseDateAsLocal(item.Date).toLocaleDateString()}</td>
-                    <td>{item.School}</td>
-                    <td>{item.NumStudents}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-    </div>
-  );
 };
 
 export default ClubStats;
