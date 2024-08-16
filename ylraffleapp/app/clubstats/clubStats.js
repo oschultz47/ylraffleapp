@@ -36,45 +36,9 @@ const ClubStats = () => {
   const [leader, setLeader] = useState(null);
   const [school, setSchool] = useState('');
   const [selectedSchool, setSelectedSchool] = useState('empty');
+  const [isLoading, setIsLoading] = useState(true);
   const { auth } = useAuth();
-  const router = useRouter(); // Initialize useNavigate for navigation
-
-  useEffect(() => {
-    if (!auth) return;
-
-    const fetchClubs = async () => {
-      try {
-        const restOperation = get({
-          apiName: 'ylraffle',
-          path: '/clubs',
-          httpMethod: 'GET',
-        });
-        const response = await restOperation.response;
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder('utf-8');
-        let result = '';
-        let done = false;
-
-        while (!done) {
-          const { value, done: streamDone } = await reader.read();
-          done = streamDone;
-          result += decoder.decode(value, { stream: !done });
-        }
-        result = JSON.parse(result);
-        setClubData(result);
-        if (school !== 'Admin') {
-          setSelectedSchool(school); // Automatically set the school for non-admin users
-        }
-        else{
-          setSelectedSchool('');
-        }
-      } catch (error) {
-        console.error('Error fetching clubs:', error);
-      }
-    };
-
-    fetchClubs();
-  }, [auth, school]);
+  const router = useRouter();
 
   useEffect(() => {
     if (!auth) return;
@@ -125,8 +89,62 @@ const ClubStats = () => {
     searchLeader();
   }, [leaderData, auth]);
 
+  useEffect(() => {
+    if (!auth) return;
+
+    const fetchAndFilterClubs = async () => {
+      try {
+        const restOperation = get({
+          apiName: 'ylraffle',
+          path: '/clubs',
+          httpMethod: 'GET',
+        });
+        const response = await restOperation.response;
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder('utf-8');
+        let result = '';
+        let done = false;
+
+        while (!done) {
+          const { value, done: streamDone } = await reader.read();
+          done = streamDone;
+          result += decoder.decode(value, { stream: !done });
+        }
+        result = JSON.parse(result);
+
+        // Filter the data before setting the state
+        let filteredData = result;
+        if (school !== 'Admin') {
+          filteredData = result.filter(item => item.School === school);
+          setSelectedSchool(school); // Automatically set the school for non-admin users
+        }
+
+        if (filteredData.length === 0) {
+          filteredData = [{
+              Date: "N/A",
+              School: school,
+              NumStudents: 0
+          }];
+        }
+
+        console.log(filteredData.length);
+      
+        
+        setClubData(filteredData);
+        setIsLoading(false); // Set loading to false after setting filtered data
+
+      } catch (error) {
+        console.error('Error fetching clubs:', error);
+        setIsLoading(false); // Ensure loading is turned off even in case of an error
+      }
+    };
+
+    fetchAndFilterClubs();
+  }, [auth, school]);
+
   const handleSchoolChange = (event) => {
     setSelectedSchool(event.target.value);
+    setIsLoading(true); // Trigger loading again when school changes
   };
 
   // Parse the date string as a local date
@@ -134,11 +152,6 @@ const ClubStats = () => {
     const parts = dateString.split('-');
     return new Date(parts[0], parts[1] - 1, parts[2]);
   };
-
-  // Filter the club data based on the selected school
-  const filteredClubData = selectedSchool
-    ? clubData.filter(item => item.School === selectedSchool)
-    : clubData;
 
   // Get unique school names
   const schoolOptions = Array.from(new Set(clubData.map(item => item.School)));
@@ -148,8 +161,8 @@ const ClubStats = () => {
     ? [
         {
           label: selectedSchool,
-          data: filteredClubData.map(item => ({
-            x: parseDateAsLocal(item.Date),  // Parse the date as local date
+          data: clubData.map(item => ({
+            x: parseDateAsLocal(item.Date),
             y: item.NumStudents,
           })),
           fill: false,
@@ -159,13 +172,13 @@ const ClubStats = () => {
         },
       ]
     : schoolOptions.map((schoolName, index) => {
-        const schoolColor = `hsl(${index * 360 / schoolOptions.length}, 70%, 50%)`; 
-        const schoolData = filteredClubData.filter(item => item.School === schoolName);
+        const schoolColor = `hsl(${index * 360 / schoolOptions.length}, 70%, 50%)`;
+        const schoolData = clubData.filter(item => item.School === schoolName);
 
         return {
           label: schoolName,
           data: schoolData.map(item => ({
-            x: parseDateAsLocal(item.Date),  // Parse the date as local date
+            x: parseDateAsLocal(item.Date),
             y: item.NumStudents,
           })),
           fill: false,
@@ -176,7 +189,7 @@ const ClubStats = () => {
       });
 
   const data = {
-    labels: filteredClubData.map(item => parseDateAsLocal(item.Date)),  // Ensure labels use local dates
+    labels: clubData.map(item => parseDateAsLocal(item.Date)),
     datasets: datasets,
   };
 
@@ -201,10 +214,9 @@ const ClubStats = () => {
         },
       },
       y: {
-        min: 1, // Set the minimum y-axis value to 1
+        min: 1,
         ticks: {
           callback: function(value) {
-            // Ensure ticks are 1 or multiples of 5
             if (value === 1 || value % 5 === 0) {
               return value;
             }
@@ -228,8 +240,22 @@ const ClubStats = () => {
     }
   };
 
-  if (selectedSchool === 'empty') {
+  if (isLoading || selectedSchool === 'empty' || clubData.length == 0) {
     return <LoadingScreen />;
+  }
+
+  if (clubData.length > 0 && clubData[0].NumStudents === 0){
+    return(
+      <div className="club-statistics-container">
+      <div className="header-container">
+        <button className="club-home-button" onClick={() => router.push('/')}>Home</button>
+        <h2>Club Statistics {school !== 'Admin' && `for ${school}`}</h2>
+      </div>
+      <div>
+      <p>No data available for this club</p>
+     </div>
+      </div>
+    )
   }
 
   return (
@@ -255,8 +281,6 @@ const ClubStats = () => {
           </select>
         </div>
       )}
-      {filteredClubData.length > 0 ? (
-        <>
           <div className="chart-container">
             <Line data={data} options={options} />
           </div>
@@ -270,9 +294,9 @@ const ClubStats = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredClubData.map((item, index) => (
+                {clubData.map((item, index) => (
                   <tr key={index}>
-                    <td>{parseDateAsLocal(item.Date).toLocaleDateString()}</td>  {/* Display local date */}
+                    <td>{parseDateAsLocal(item.Date).toLocaleDateString()}</td>
                     <td>{item.School}</td>
                     <td>{item.NumStudents}</td>
                   </tr>
@@ -280,10 +304,6 @@ const ClubStats = () => {
               </tbody>
             </table>
           </div>
-        </>
-      ) : (
-        <p>No data available for this club.</p>
-      )}
     </div>
   );
 };
