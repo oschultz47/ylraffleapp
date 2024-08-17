@@ -67,7 +67,7 @@
   max-width: 500px;
 }
 
-.school-filter {
+.raffle-school-filter {
   position: absolute;
   bottom: 20px; /* Adjust the distance from the bottom */
   left: 20px; /* Adjust the distance from the left */
@@ -76,11 +76,11 @@
   justify-content: flex-start;
 }
 
-.school-filter label {
+.raffle-school-filter label {
   margin-right: 10px; /* Space between label and dropdown */
 }
 
-.school-filter select {
+.raffle-school-filter select {
   padding: 5px;
   font-size: 16px;
 }

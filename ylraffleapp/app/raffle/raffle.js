@@ -256,7 +256,7 @@ const Raffle = () => {
         Eliminate Half
       </button>
       {school === 'Admin' && (
-        <div className="school-filter">
+        <div className="raffle-school-filter">
           <label htmlFor="school-select">Filter by School: </label>
           <select
             id="school-select"
