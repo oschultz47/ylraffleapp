@@ -94,7 +94,7 @@ const ClubStats = () => {
   useEffect(() => {
     if (!auth) return;
     if (!school) return;
-
+  
     const fetchAndFilterClubs = async () => {
       try {
         const restOperation = get({
@@ -107,20 +107,20 @@ const ClubStats = () => {
         const decoder = new TextDecoder('utf-8');
         let result = '';
         let done = false;
-
+  
         while (!done) {
           const { value, done: streamDone } = await reader.read();
           done = streamDone;
           result += decoder.decode(value, { stream: !done });
         }
         result = JSON.parse(result);
-
+  
         // Filter the data before setting the state
         let filteredData = result;
-        if (school !== "Admin"){
+        if (school !== "Admin") {
           filteredData = result.filter(item => item.School === school);
         }
-
+  
         if (filteredData.length === 0) {
           filteredData = [{
               Date: "N/A",
@@ -128,18 +128,23 @@ const ClubStats = () => {
               NumStudents: 0
           }];
         }
-
-        console.log(filteredData.length);
-      
-        
+  
+        // Sort the filtered data by date
+        filteredData.sort((a, b) => {
+          const dateA = new Date(a.Date);
+          const dateB = new Date(b.Date);
+          return dateB - dateA;
+        });
+  
         setClubData(filteredData);
       } catch (error) {
         console.error('Error fetching clubs:', error);
       }
     };
-
+  
     fetchAndFilterClubs();
   }, [auth, school]);
+  
 
   const handleSchoolChange = (event) => {
     setSelectedSchool(event.target.value);
