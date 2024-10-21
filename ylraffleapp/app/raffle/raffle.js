@@ -17,6 +17,7 @@ const Raffle = () => {
   const [namesLoaded, setNamesLoaded] = useState(false); // Default to false
   const [school, setSchool] = useState('ffffff');
   const [selectedSchool, setSelectedSchool] = useState(''); // For filtering names
+  const [isEliminationActive, setIsEliminationActive] = useState(false); // Track if elimination has started
   const { auth } = useAuth();
   const router = useRouter(); // Initialize the router
   const intervalRef = useRef(null); // Use useRef to store the interval ID
@@ -123,12 +124,14 @@ const Raffle = () => {
       }
     };
 
-    fetchItems();
-  
-    intervalRef.current = setInterval(fetchItems, 1000); // Poll every second
+    // Only fetch items if the elimination is not active
+    if (!isEliminationActive) {
+      fetchItems();
+      intervalRef.current = setInterval(fetchItems, 1000); // Poll every second
+    }
   
     return () => clearInterval(intervalRef.current); // Cleanup on unmount
-  }, [school, auth, selectedSchool]);
+  }, [school, auth, selectedSchool, isEliminationActive]);
   
 
   useEffect(() => {
@@ -137,8 +140,8 @@ const Raffle = () => {
   }, [tableData]);
 
   useEffect(() => {
-    if (names.length === 1) {
-      setWinner(names[0]);
+    if (names.filter(name => name && name.trim() !== '').length === 1) {
+      setWinner(names.filter(name => name && name.trim() !== '')[0]);
     }
   }, [names]);
 
@@ -148,6 +151,7 @@ const Raffle = () => {
   };
 
   const resetRaffle = () => {
+    setIsEliminationActive(false); // Reset the elimination state
     if (!auth || !school) return; // Prevent further execution if not authenticated or no school
 
     const fetchItems = async () => {
@@ -193,7 +197,8 @@ const Raffle = () => {
   };
 
   const eliminateHalf = () => {
-    clearInterval(intervalRef.current);
+    clearInterval(intervalRef.current); // Stop polling when elimination starts
+    setIsEliminationActive(true); // Set elimination to active
     const remainingNames = [...names];
     const half = Math.floor(remainingNames.length / 2);
     for (let i = 0; i < half; i++) {
@@ -238,7 +243,7 @@ const Raffle = () => {
     <div className="raffle-container">
       {winner && <WinnerModal winner={winner} onClose={handleCloseModal} />}
       <div id="names" className="names-grid">
-        {names.map((name, index) => (
+        {names.filter(name => name && name.trim() !== '').map((name, index) => (
           <div
             key={index}
             className="name"
